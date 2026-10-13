@@ -1,16 +1,32 @@
-# React + Vite
+# College Complaint Portal
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A modular college grievance portal UI built with React and Vite from the supplied university-style design references.
 
-Currently, two official plugins are available:
+## Current frontend modules
+- Responsive homepage and shared navigation/footer
+- About page and portal objectives
+- Searchable grievance categories and category detail panel
+- Complaint tracking form with explicit backend-not-connected messaging
+- Student/admin role selection, login and registration UI
+- Responsive styles, form labels and keyboard focus indicators
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Run locally
+```bash
+npm install
+npm run dev
+```
 
-## React Compiler
+Build and preview:
+```bash
+npm run build
+npm run preview
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Current limitations
+This commit establishes the frontend foundation only. Login, registration, complaint tracking, database persistence, admin actions and file uploads are not connected to a backend. Do not use the current forms as real authentication or complaint submission.
 
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## Planned milestones
+1. Add React Router and protected routes.
+2. Add Express API, MongoDB models and server-side validation.
+3. Integrate authentication, roles and complaint status lifecycle.
+4. Add tests, environment validation and deployment configuration.
