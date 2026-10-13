@@ -1,0 +1,2 @@
+import './Footer.css'
+export default function Footer(){return <footer className="site-footer"><div><a className="footer-brand" href="#home">▥ College Complaint Portal</a><p>A transparent, student-centred way to raise concerns and follow their progress.</p></div><nav><a href="#about">About</a><a href="#services">Services</a><a href="#track">Track complaint</a><a href="#login">Sign in</a></nav><small>© {new Date().getFullYear()} College Complaint Portal · Together for a better campus.</small></footer>}
