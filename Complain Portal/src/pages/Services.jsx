@@ -1,3 +1,129 @@
-import {useState} from 'react'
-const categories=[['academic','▤','Academic Issues','Teaching, syllabus, examinations, marks and attendance.'],['infrastructure','⌂','Infrastructure & Facilities','Classrooms, laboratories, furniture, water and cleanliness.'],['faculty','♧','Faculty & Staff','Staff behaviour, communication and availability.'],['hostel','⌂','Hostel & Accommodation','Hostel rooms, water supply and maintenance.'],['food','♨','Food & Canteen','Food quality, hygiene and canteen services.'],['safety','◇','Safety & Security','Campus safety and security arrangements.'],['fees','₹','Fees & Administration','Fee receipts, certificates and student records.'],['transport','▰','Transportation','College buses, routes and timings.'],['other','•••','Other Issues','Concerns that do not fit another category.']]
-export default function Services(){const [selected,setSelected]=useState(null),[search,setSearch]=useState('');const filtered=categories.filter(c=>(c[2]+' '+c[3]).toLowerCase().includes(search.toLowerCase()));const active=categories.find(c=>c[0]===selected);return <><section className="page-hero"><span className="eyebrow">PORTAL SERVICES</span><h1>Grievance categories</h1><p>Choose the category that best describes your concern.</p></section><section className="section services">{active?<><button className="back-link" onClick={()=>setSelected(null)}>← Back to all categories</button><div className="detail-panel"><span className="feature-icon">{active[1]}</span><h2>{active[2]}</h2><p>{active[3]}</p><h3>How it works</h3><ol><li>Select the relevant category</li><li>Describe the issue and attach evidence if needed</li><li>Submit and save your complaint reference</li><li>Sign in to follow progress</li></ol><a className="btn btn-primary" href="#register" onClick={()=>sessionStorage.setItem('selectedComplaintCategory',active[0])}>Raise a Complaint →</a></div></>:<><div className="services-toolbar"><div><h2>Find the right service</h2><p>View category details before starting a complaint.</p></div><input aria-label="Search categories" placeholder="Search categories" value={search} onChange={e=>setSearch(e.target.value)}/></div><div className="category-grid">{filtered.map(([id,icon,title,desc],i)=><article className="category-card" key={id}><span className={'feature-icon feature-'+(i%4)}>{icon}</span><h3>{title}</h3><p>{desc}</p><button className="back-link" onClick={()=>setSelected(id)}>View details →</button></article>)}</div>{!filtered.length&&<p>No matching categories found.</p>}</>}</section></>}
+import { useState } from "react";
+const categories = [
+  [
+    "academic",
+    "▤",
+    "Academic Issues",
+    "Teaching, syllabus, examinations, marks and attendance.",
+  ],
+  [
+    "infrastructure",
+    "⌂",
+    "Infrastructure & Facilities",
+    "Classrooms, laboratories, furniture, water and cleanliness.",
+  ],
+  [
+    "faculty",
+    "♧",
+    "Faculty & Staff",
+    "Staff behaviour, communication and availability.",
+  ],
+  [
+    "hostel",
+    "⌂",
+    "Hostel & Accommodation",
+    "Hostel rooms, water supply and maintenance.",
+  ],
+  [
+    "food",
+    "♨",
+    "Food & Canteen",
+    "Food quality, hygiene and canteen services.",
+  ],
+  [
+    "safety",
+    "◇",
+    "Safety & Security",
+    "Campus safety and security arrangements.",
+  ],
+  [
+    "fees",
+    "₹",
+    "Fees & Administration",
+    "Fee receipts, certificates and student records.",
+  ],
+  ["transport", "▰", "Transportation", "College buses, routes and timings."],
+  [
+    "other",
+    "•••",
+    "Other Issues",
+    "Concerns that do not fit another category.",
+  ],
+];
+export default function Services() {
+  const [selected, setSelected] = useState(null),
+    [search, setSearch] = useState("");
+  const filtered = categories.filter((c) =>
+    (c[2] + " " + c[3]).toLowerCase().includes(search.toLowerCase()),
+  );
+  const active = categories.find((c) => c[0] === selected);
+  return (
+    <>
+      <section className="page-hero">
+        <span className="eyebrow">PORTAL SERVICES</span>
+        <h1>Grievance categories</h1>
+        <p>Choose the category that best describes your concern.</p>
+      </section>
+      <section className="section services">
+        {active ? (
+          <>
+            <button className="back-link" onClick={() => setSelected(null)}>
+              ← Back to all categories
+            </button>
+            <div className="detail-panel">
+              <span className="feature-icon">{active[1]}</span>
+              <h2>{active[2]}</h2>
+              <p>{active[3]}</p>
+              <h3>How it works</h3>
+              <ol>
+                <li>Select the relevant category</li>
+                <li>Describe the issue and attach evidence if needed</li>
+                <li>Submit and save your complaint reference</li>
+                <li>Sign in to follow progress</li>
+              </ol>
+              <a
+                className="btn btn-primary"
+                href="#register"
+                onClick={() =>
+                  sessionStorage.setItem("selectedComplaintCategory", active[0])
+                }
+              >
+                Raise a Complaint →
+              </a>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="services-toolbar">
+              <div>
+                <h2>Find the right service</h2>
+                <p>View category details before starting a complaint.</p>
+              </div>
+              <input
+                aria-label="Search categories"
+                placeholder="Search categories"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+            <div className="category-grid">
+              {filtered.map(([id, icon, title, desc], i) => (
+                <article className="category-card" key={id}>
+                  <span className={"feature-icon feature-" + (i % 4)}>
+                    {icon}
+                  </span>
+                  <h3>{title}</h3>
+                  <p>{desc}</p>
+                  <button className="back-link" onClick={() => setSelected(id)}>
+                    View details →
+                  </button>
+                </article>
+              ))}
+            </div>
+            {!filtered.length && <p>No matching categories found.</p>}
+          </>
+        )}
+      </section>
+    </>
+  );
+}
