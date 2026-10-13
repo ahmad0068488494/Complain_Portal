@@ -9,7 +9,7 @@ export default function Header({ active }) {
   return (
     <header className="site-header">
       <a className="brand" href="#home">
-        <span className="brand-icon">▥</span>College Complaint Portal
+        <span className="brand-icon">▥</span>Complaint Portal
       </a>
       <nav>
         {nav.map(([label, id]) => (

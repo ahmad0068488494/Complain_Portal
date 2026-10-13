@@ -4,7 +4,7 @@ export default function Footer() {
     <footer className="site-footer">
       <div>
         <a className="footer-brand" href="#home">
-          ▥ College Complaint Portal
+          ▥ Complaint Portal
         </a>
         <p>
           A transparent, student-centred way to raise concerns and follow their
@@ -18,7 +18,7 @@ export default function Footer() {
         <a href="#login">Sign in</a>
       </nav>
       <small>
-        © {new Date().getFullYear()} College Complaint Portal · Together for a
+        © {new Date().getFullYear()}Complaint Portal · Together for a
         better campus.
       </small>
     </footer>
