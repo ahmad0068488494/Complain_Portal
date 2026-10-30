@@ -15,9 +15,10 @@ A college complaint-management project using React + Vite for the frontend, Node
 
 ## 1. Configure Supabase
 
-1. Open your Supabase project and go to **SQL Editor**.
-2. Run the complete script in `backend/supabase/schema.sql`.
-3. In **Project Settings → API**, copy your Project URL and the service-role key.
+Production Supabase project: `Complaint Portal Production` (`tnpitjbmrldctswebeeo`, Mumbai region). The schema in `backend/supabase/schema.sql` has already been applied and verified in this project.
+
+1. Open the production project in Supabase Dashboard if you need to inspect its database.
+2. In **Project Settings → API Keys**, copy the server-only secret/service-role key. The project URL is `https://tnpitjbmrldctswebeeo.supabase.co`.
 4. Keep the service-role key only in `backend/.env`. Never put it in the React frontend or commit it to GitHub.
 
 ## 2. Start the backend
@@ -35,9 +36,9 @@ Edit `backend/.env` and replace the placeholder values:
 ```env
 PORT=5000
 FRONTEND_URL=http://localhost:5173
-SUPABASE_URL=https://YOUR_PROJECT_ID.supabase.co
-SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
-SUPABASE_SERVICE_ROLE_KEY=YOUR_REAL_SERVICE_ROLE_KEY
+SUPABASE_URL=https://tnpitjbmrldctswebeeo.supabase.co
+SUPABASE_ANON_KEY=sb_publishable_iA6jKx8Fiz1vxgtZstEjww_52vNUhE-
+SUPABASE_SERVICE_ROLE_KEY=YOUR_REAL_SERVER_ONLY_SECRET_KEY
 ```
 
 Then run:
@@ -75,7 +76,7 @@ Protected routes expect `Authorization: Bearer <Supabase access token>`.
 
 ## Important current scope
 
-The backend starter and local development setup are in place. The existing login/register frontend is still UI-only and is **not yet connected to Supabase Auth**. Student/admin dashboards, account registration/login integration, complaint forms, and end-to-end tests are the next development steps. Do not treat the UI role selector as authorization; admin access must be granted in the database by a trusted project administrator.
+The production Supabase database schema and local backend starter are in place. The existing login/register frontend is still UI-only and is **not yet connected to Supabase Auth**. Student/admin dashboards, account registration/login integration, complaint forms, and end-to-end tests are the next development steps. Do not treat the UI role selector as authorization; admin access must be granted in the database by a trusted project administrator.
 
 ## Security notes
 
