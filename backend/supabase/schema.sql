@@ -79,13 +79,8 @@ on public.profiles for select
 to authenticated
 using (auth.uid() = id);
 
-drop policy if exists "Users can update own basic profile" on public.profiles;
-create policy "Users can update own basic profile"
-on public.profiles for update
-to authenticated
-using (auth.uid() = id)
-with check (auth.uid() = id and role = (select p.role from public.profiles p where p.id = auth.uid()));
-
+-- Profile updates are intentionally disabled for normal users so a student
+-- cannot promote their own account by changing the role column.
 drop policy if exists "Students can read own complaints" on public.complaints;
 create policy "Students can read own complaints"
 on public.complaints for select
