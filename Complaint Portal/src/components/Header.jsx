@@ -15,7 +15,7 @@ export default function Header({ active }) {
         {nav.map(([label, id]) => (
           <a key={id} className={active === id ? "active" : ""} href={"#" + id}>
             {label}
-            {id === "services" ? " ⌄" : ""}
+            {id === "services" ? " " : ""}
           </a>
         ))}
       </nav>
