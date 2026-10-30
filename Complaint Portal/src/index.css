@@ -1,11 +1,5 @@
 :root {
-  font-family:
-    Inter,
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    "Segoe UI",
-    sans-serif;
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   color: #142f52;
   background: #fff;
   font-synthesis: none;
@@ -849,4 +843,18 @@ nav a {
     padding-left: max(6vw, calc((100vw - 1800px) / 2));
     padding-right: max(6vw, calc((100vw - 1800px) / 2));
   }
+}
+
+
+/* Typography system: Poppins for headings, Inter for body and controls */
+body,
+button,
+input,
+select,
+textarea {
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+h1, h2, h3, h4, h5, h6,
+.brand {
+  font-family: 'Poppins', ui-sans-serif, system-ui, sans-serif;
 }
