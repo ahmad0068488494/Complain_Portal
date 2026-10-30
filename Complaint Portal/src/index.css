@@ -614,3 +614,239 @@ p {
     transition: none !important;
   }
 }
+
+
+/* Responsive layout foundation: phone, tablet, desktop and large displays */
+img, video, canvas, svg {
+  max-width: 100%;
+}
+img, video {
+  height: auto;
+}
+body {
+  overflow-wrap: anywhere;
+  -webkit-text-size-adjust: 100%;
+}
+button, input, select, textarea {
+  max-width: 100%;
+}
+input, select, textarea {
+  min-width: 0;
+}
+main, section, article, header, footer {
+  min-width: 0;
+}
+.app-shell {
+  width: 100%;
+  overflow-x: clip;
+}
+.section,
+.page-hero,
+.home-cta {
+  width: 100%;
+}
+.feature-card,
+.category-card,
+.detail-panel,
+.track-card,
+.auth-panel {
+  min-width: 0;
+}
+.hero-copy {
+  width: min(100%, 1440px);
+}
+.feature-card p,
+.category-card p,
+.track-card p,
+.auth-aside p {
+  overflow-wrap: anywhere;
+}
+.btn {
+  min-height: 44px;
+  touch-action: manipulation;
+}
+.track-card input,
+.services-toolbar input,
+.auth-form input:not([type="checkbox"]),
+.auth-form select,
+.two-fields input {
+  min-height: 44px;
+}
+.category-card .back-link {
+  min-height: 44px;
+  padding: 10px 0;
+}
+.site-footer nav a,
+nav a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Compact phones */
+@media (max-width: 520px) {
+  .hero {
+    min-height: auto;
+    background-position: 58% center;
+  }
+  .hero-copy {
+    width: 100%;
+    padding: 44px 20px 54px;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 9vw, 44px);
+    letter-spacing: -0.8px;
+  }
+  .hero-copy > p {
+    font-size: 15px;
+  }
+  .hero-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .hero-actions .btn {
+    width: 100%;
+  }
+  .section-title {
+    text-align: left;
+  }
+  .section-title h2 {
+    font-size: clamp(25px, 7vw, 32px);
+  }
+  .feature-card,
+  .category-card {
+    padding: 20px;
+  }
+  .track-wrap {
+    padding: 32px 14px;
+  }
+  .track-card {
+    padding: 22px 18px;
+  }
+  .auth-page {
+    padding: 28px 12px 40px;
+  }
+  .auth-panel {
+    border-radius: 12px;
+  }
+  .forgot-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .home-cta {
+    padding-block: 32px;
+  }
+}
+
+/* Tablet and small laptop */
+@media (min-width: 521px) and (max-width: 900px) {
+  .hero {
+    min-height: 470px;
+    background-position: 60% center;
+  }
+  .hero-copy {
+    max-width: 700px;
+    padding: 54px clamp(24px, 5vw, 48px);
+  }
+  .section {
+    padding: 48px clamp(22px, 4vw, 38px);
+  }
+  .feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .category-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .services-toolbar {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .services-toolbar input {
+    width: min(100%, 320px);
+  }
+  .auth-panel {
+    max-width: 720px;
+  }
+}
+
+/* Wide desktops */
+@media (min-width: 1440px) {
+  .hero-copy {
+    max-width: 1600px;
+    padding-left: clamp(90px, 8vw, 180px);
+  }
+  .section {
+    padding-left: clamp(70px, 7vw, 140px);
+    padding-right: clamp(70px, 7vw, 140px);
+  }
+  .feature-grid {
+    gap: clamp(18px, 1.4vw, 30px);
+  }
+  .feature-card,
+  .category-card {
+    padding: clamp(24px, 1.6vw, 36px);
+  }
+  .page-hero {
+    padding-left: clamp(90px, 8vw, 180px);
+    padding-right: clamp(90px, 8vw, 180px);
+  }
+}
+
+/* TV / 4K and ultra-wide screens: keep content readable rather than stretching */
+@media (min-width: 1920px) {
+  body {
+    font-size: 18px;
+  }
+  .site-header,
+  .site-footer,
+  .section,
+  .page-hero,
+  .home-cta {
+    padding-left: max(5vw, calc((100vw - 1680px) / 2));
+    padding-right: max(5vw, calc((100vw - 1680px) / 2));
+  }
+  .hero-copy {
+    max-width: 1680px;
+    padding-top: 100px;
+    padding-bottom: 100px;
+  }
+  .hero h1 {
+    font-size: clamp(64px, 3.4vw, 88px);
+  }
+  .hero-copy > p {
+    font-size: 21px;
+    max-width: 720px;
+  }
+  .feature-grid,
+  .category-grid {
+    gap: 24px;
+  }
+  .feature-card h3,
+  .category-card h3 {
+    font-size: 20px;
+  }
+  .feature-card p,
+  .category-card p {
+    font-size: 16px;
+  }
+  .page-hero h1 {
+    font-size: clamp(52px, 2.8vw, 72px);
+  }
+  .auth-panel {
+    max-width: 1180px;
+  }
+}
+@media (min-width: 2560px) {
+  body {
+    font-size: 20px;
+  }
+  .hero-copy,
+  .section,
+  .page-hero,
+  .home-cta,
+  .site-header,
+  .site-footer {
+    padding-left: max(6vw, calc((100vw - 1800px) / 2));
+    padding-right: max(6vw, calc((100vw - 1800px) / 2));
+  }
+}
