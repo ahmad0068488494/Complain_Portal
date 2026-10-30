@@ -21,7 +21,19 @@ Production Supabase project: `Complaint Portal Production` (`tnpitjbmrldctswebee
 2. In **Project Settings → API Keys**, copy the server-only secret/service-role key. The project URL is `https://tnpitjbmrldctswebeeo.supabase.co`.
 4. Keep the service-role key only in `backend/.env`. Never put it in the React frontend or commit it to GitHub.
 
-## 2. Start the backend
+## 2. Configure and start the frontend
+
+Create `Complaint Portal/.env` using `Complaint Portal/.env.example` as a reference and set `VITE_SUPABASE_URL` plus `VITE_SUPABASE_PUBLISHABLE_KEY`. Use only the publishable key in frontend variables; never put a service-role/secret key in the frontend. After changing environment variables, restart Vite.
+
+Install the frontend dependency and start Vite:
+
+```powershell
+cd "Complaint Portal"
+npm install
+npm run dev
+```
+
+## 3. Start the backend
 
 Open a terminal at the repository root:
 
@@ -51,7 +63,7 @@ Verify the API in your browser: http://localhost:5000/api/health
 
 A healthy response contains `"status": "ok"`. The root URL http://localhost:5000 also returns a status response.
 
-## 3. Start the frontend
+## 4. Start the frontend (alternative local setup)
 
 Open a **second terminal** at the repository root:
 
