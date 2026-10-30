@@ -178,3 +178,39 @@ nav a:hover {
     padding: 14px 22px;
   }
 }
+
+
+/* Refined navigation typography */
+.brand {
+  font-family: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.25px;
+}
+.site-header nav a {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-size: clamp(14px, 0.95vw, 15px);
+  font-weight: 600;
+  letter-spacing: 0.1px;
+  line-height: 1.2;
+}
+.site-header .header-actions .btn {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+@media (max-width: 520px) {
+  .site-header nav a {
+    font-size: 14px;
+  }
+  .header-actions .btn {
+    font-size: 12px;
+  }
+}
+@media (min-width: 1920px) {
+  .site-header nav a {
+    font-size: 17px;
+  }
+  .site-header .header-actions .btn {
+    font-size: 15px;
+  }
+}
