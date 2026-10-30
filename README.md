@@ -1,46 +1,85 @@
 # Complaint Portal
 
-A college grievance portal with a React + Vite frontend and a Node.js + Express API designed to connect to Supabase.
+A college complaint-management project using React + Vite for the frontend, Node.js + Express for the API, and Supabase Auth + PostgreSQL for authentication and data storage.
 
-## Repository structure
+## Project structure
 
-- `Complaint Portal/` — existing React + Vite frontend
-- `backend/` — Express API, Supabase server client, authentication middleware, complaint routes, and admin routes
+- `Complaint Portal/` — React + Vite frontend
+- `backend/` — Express API and Supabase server-side client
+- `backend/supabase/schema.sql` — database tables, signup profile trigger, and Row Level Security policies
 
-## Backend setup
+## Requirements
 
-1. Install Node.js (LTS).
-2. Open a terminal in the `backend` folder.
-3. Install dependencies:
+- Node.js LTS (use a version supported by Vite 8; Node.js 20.19+ or 22.12+ is recommended)
+- A Supabase project
 
-   ```bash
-   npm install
-   ```
+## 1. Configure Supabase
 
-4. Copy `.env.example` to `.env` and fill in your Supabase project URL and server-side service-role key.
-5. Start the development server:
+1. Open your Supabase project and go to **SQL Editor**.
+2. Run the complete script in `backend/supabase/schema.sql`.
+3. In **Project Settings → API**, copy your Project URL and the service-role key.
+4. Keep the service-role key only in `backend/.env`. Never put it in the React frontend or commit it to GitHub.
 
-   ```bash
-   npm run dev
-   ```
+## 2. Start the backend
 
-6. Check `http://localhost:5000/api/health`.
+Open a terminal at the repository root:
 
-**Security:** Never commit `backend/.env` or expose the Supabase service-role key in frontend code. The key bypasses Row Level Security and must remain server-only.
+```powershell
+cd backend
+npm install
+Copy-Item .env.example .env
+```
 
-## API starter routes
+Edit `backend/.env` and replace the placeholder values:
 
-- `GET /api/health` — health check
-- `GET /api/auth/me` — current authenticated user
-- `GET /api/complaints` — current user's complaints
-- `POST /api/complaints` — create a complaint
-- `GET /api/admin/complaints` — admin-only complaint listing
-- `PATCH /api/admin/complaints/:id/status` — admin-only status update
+```env
+PORT=5000
+FRONTEND_URL=http://localhost:5173
+SUPABASE_URL=https://YOUR_PROJECT_ID.supabase.co
+SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY=YOUR_REAL_SERVICE_ROLE_KEY
+```
+
+Then run:
+
+```powershell
+npm run dev
+```
+
+Verify the API in your browser: http://localhost:5000/api/health
+
+A healthy response contains `"status": "ok"`. The root URL http://localhost:5000 also returns a status response.
+
+## 3. Start the frontend
+
+Open a **second terminal** at the repository root:
+
+```powershell
+cd "Complaint Portal"
+npm install
+npm run dev
+```
+
+Open the local URL printed by Vite, usually http://localhost:5173. The Vite development server proxies `/api` requests to the backend on port 5000.
+
+## Available API routes
+
+- `GET /api/health` — API health check
+- `GET /api/auth/me` — current authenticated user (requires a Supabase access token)
+- `GET /api/complaints` — current user's complaints (requires authentication)
+- `POST /api/complaints` — create a complaint (requires authentication)
+- `GET /api/admin/complaints` — list complaints (requires an admin account)
+- `PATCH /api/admin/complaints/:id/status` — update status (requires an admin account)
 
 Protected routes expect `Authorization: Bearer <Supabase access token>`.
 
-## Database expectations
+## Important current scope
 
-The starter API expects a `profiles` table with `id` and `role` columns, and a `complaints` table with at least `id`, `user_id`, `title`, `description`, `category`, `status`, and `created_at`. Create and verify the schema in Supabase before using these endpoints. Adjust field names and status values to match the actual database schema.
+The backend starter and local development setup are in place. The existing login/register frontend is still UI-only and is **not yet connected to Supabase Auth**. Student/admin dashboards, account registration/login integration, complaint forms, and end-to-end tests are the next development steps. Do not treat the UI role selector as authorization; admin access must be granted in the database by a trusted project administrator.
 
-Before production, add request validation, rate limiting, audit/status history, tests, and production deployment configuration. The frontend is not yet wired to these API endpoints.
+## Security notes
+
+- Never commit `backend/.env`.
+- Never expose the Supabase service-role key in frontend code.
+- Keep Row Level Security enabled on user data tables.
+- For production, configure the real deployed frontend origin, input validation, rate limiting, logging, and deployment environment variables.
