@@ -40,13 +40,14 @@ export default function Dashboard({ session, profile, onSignOut }) {
 
   async function create(e) {
     e.preventDefault(); setError(""); setNotice("");
+    const referenceId = `CP-${new Date().getFullYear()}-${crypto.randomUUID().replace(/-/g, "").slice(0, 8).toUpperCase()}`;
     if (demoMode || !supabase) {
-      setItems(old => [{ id: "DEMO-" + Date.now(), title: title.trim(), description: description.trim(), category, status: "pending", created_at: new Date().toISOString(), user_id: "demo-student", student_name: profileName || "Demo Student" }, ...old]);
-      setTitle(""); setDescription(""); setNotice("Demo complaint added locally. It has not been saved to a database."); return;
+      setItems(old => [{ id: "DEMO-" + Date.now(), reference_id: referenceId, title: title.trim(), description: description.trim(), category, status: "pending", created_at: new Date().toISOString(), user_id: "demo-student", student_name: profileName || "Demo Student" }, ...old]);
+      setTitle(""); setDescription(""); setNotice(`Demo complaint ID: ${referenceId}. This is a local preview only, not saved to the database.`); return;
     }
-    const { error: insertError } = await supabase.from("complaints").insert({ user_id: session.user.id, title: title.trim(), description: description.trim(), category, status: "pending" });
+    const { error: insertError } = await supabase.from("complaints").insert({ reference_id: referenceId, user_id: session.user.id, title: title.trim(), description: description.trim(), category, status: "pending" });
     if (insertError) { setError(insertError.message); return; }
-    setTitle(""); setDescription(""); setNotice("Complaint submitted successfully."); await load();
+    setTitle(""); setDescription(""); setNotice(`Complaint submitted successfully. Your Complaint ID is ${referenceId}. Save this ID to track your complaint.`); await load();
   }
 
   async function changeStatus(id, status) {
