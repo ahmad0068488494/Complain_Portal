@@ -8,5 +8,5 @@ export default function App(){
  async function authenticated(s,p){setSession(s);if(p)setProfile(p);else if(s?.user&&supabase){const {data}=await supabase.from("profiles").select("role,full_name").eq("id",s.user.id).maybeSingle();setProfile(data||null);}location.hash="dashboard";setView("dashboard");}
  async function signOut(){if(supabase)await supabase.auth.signOut();setSession(null);setProfile(null);location.hash="home";setView("home");}
  let page;if(view==="dashboard")page=ready&&session&&profile?<Dashboard session={session} profile={profile} onSignOut={signOut}/>:<section className="section"><h2>Sign in required</h2><p>Please log in to access your dashboard.</p><a className="btn btn-primary" href="#login">Go to login</a></section>;else page={home:<Home/>,about:<About/>,services:<Services/>,track:<TrackComplaint/>,login:<AuthPage mode="login" onAuthenticated={authenticated}/>,register:<AuthPage mode="register" onAuthenticated={authenticated}/>,faqs:<HelpFAQs/>}[view]||<Home/>;
- return <div className="app-shell"><Header active={view}/><main>{page}</main><Footer/></div>;
+ return <div className="app-shell"><Header active={view} session={session}/><main>{page}</main><Footer/></div>;
 }
