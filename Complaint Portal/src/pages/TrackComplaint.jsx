@@ -27,10 +27,7 @@ export default function TrackComplaint() {
     }
     setLoading(true);
     const { data, error: lookupError } = await supabase
-      .from("complaints")
-      .select("reference_id,title,category,status,created_at,updated_at,admin_remarks")
-      .eq("reference_id", referenceId)
-      .maybeSingle();
+      .rpc("track_complaint_by_reference", { p_reference_id: referenceId });
     setLoading(false);
     setSearched(true);
     if (lookupError) {
@@ -39,11 +36,12 @@ export default function TrackComplaint() {
         : "Unable to check this complaint right now. Please try again.");
       return;
     }
-    if (!data) {
+    const result = Array.isArray(data) ? data[0] : data;
+    if (!result) {
       setError("No complaint was found for that ID. Check the ID and try again.");
       return;
     }
-    setComplaint(data);
+    setComplaint(result);
   }
 
   return (
