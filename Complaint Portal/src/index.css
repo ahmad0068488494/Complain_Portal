@@ -1029,3 +1029,16 @@ h1, h2, h3, h4, h5, h6,
 @media(min-width:1100px){.student-main-content .dashboard-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.student-dashboard-shell{grid-template-columns:1fr}.student-sidebar{min-height:auto;padding:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.student-sidebar-brand{grid-column:1/-1;padding-bottom:12px}.student-sidebar-label,.student-sidebar-footer{display:none}.student-sidebar>button{font-size:12px;padding:9px}.student-main-content{padding:22px 15px 38px}.student-main-content .dashboard-top{align-items:flex-start;flex-direction:column}.student-welcome-panel{align-items:flex-start;flex-direction:column}.student-welcome-panel .btn{width:100%}}
 @media(max-width:430px){.student-main-content .dashboard-stats>div.dashboard-stat-card{grid-template-columns:34px 1fr;padding:13px 10px}.student-main-content .dashboard-stat-icon{width:34px;height:34px}.student-main-content .dashboard-stat-card strong{font-size:24px}.student-user-chip{white-space:normal}}
+
+/* Student profile card is the first dashboard section, matching the supplied reference. */
+.student-main-content .student-dashboard-title-hidden{display:none}
+.student-main-content .student-info-card{grid-template-columns:68px minmax(0,1fr);align-items:start;max-width:none;margin:0 0 20px;padding:28px;border-color:#dce6f2;border-radius:15px;box-shadow:0 5px 22px #092d5908}
+.student-info-card .dashboard-avatar{width:64px;height:64px;font-size:25px}
+.student-info-content>.eyebrow{display:block;margin:3px 0 7px;color:#246bc0}
+.student-info-content h2{margin:0 0 20px;color:#0a3768;font-size:25px;letter-spacing:-.4px}
+.student-info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px 26px}
+.student-info-grid>div{display:grid;gap:6px;min-width:0;padding:13px 15px;border:1px solid #e5ecf5;border-radius:9px;background:#f9fbfe}
+.student-info-grid small{color:#73849a;font-size:10px;font-weight:800;letter-spacing:1px}
+.student-info-grid strong{color:#254464;font-size:13px;font-weight:650;overflow-wrap:anywhere}
+.student-main-content .student-welcome-panel{margin-top:0}
+@media(max-width:600px){.student-main-content .student-info-card{grid-template-columns:44px minmax(0,1fr);padding:17px;gap:12px}.student-info-card .dashboard-avatar{width:42px;height:42px;font-size:18px}.student-info-content h2{font-size:20px;margin-bottom:14px}.student-info-grid{grid-template-columns:1fr;gap:9px}.student-info-grid>div{padding:10px 12px}}
