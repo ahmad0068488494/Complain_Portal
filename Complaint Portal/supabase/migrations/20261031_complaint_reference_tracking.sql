@@ -2,7 +2,8 @@
 -- Run this migration in Supabase SQL Editor after confirming the complaints table exists.
 
 alter table public.complaints
-  add column if not exists reference_id text;
+  add column if not exists reference_id text,
+  add column if not exists updated_at timestamptz;
 
 -- Backfill existing records with unique, non-guessable reference IDs.
 update public.complaints
