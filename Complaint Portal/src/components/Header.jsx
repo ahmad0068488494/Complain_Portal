@@ -8,7 +8,7 @@ const nav = [
 ];
 
 const serviceLinks = [
-  ["Raise a Complaint", "dashboard", "✎"],
+  ["Raise a Complaint", "login", "✎"],
   ["Grievance Categories", "services", "▦"],
   ["Help & FAQs", "faqs", "?"],
 ];
@@ -46,7 +46,7 @@ export default function Header({ active, session }) {
               {serviceLinks.map(([label, id, icon]) => (
                 <a
                   key={id}
-                  href={"#" + id}
+                  href={"#" + (label === "Raise a Complaint" ? (session ? "dashboard" : "login") : id)}
                   role="menuitem"
                   onClick={() => setServicesOpen(false)}
                 >
