@@ -10,8 +10,8 @@ const demoComplaints = [
 ];
 const dateLabel = value => value ? new Date(value).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "—";
 
-export default function Dashboard({ session, profile, onSignOut }) {
-  const admin = profile?.role === "admin";
+export default function Dashboard({ session, profile, onSignOut, dashboardRole }) {
+  const admin = (dashboardRole || profile?.role) === "admin";
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
