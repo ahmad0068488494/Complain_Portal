@@ -9,7 +9,7 @@ export default function AuthPage({ mode, onAuthenticated }) {
   if(!supabase){setError("Missing VITE_SUPABASE_URL or VITE_SUPABASE_PUBLISHABLE_KEY in Complaint Portal/.env.");return;}
   if(register&&password!==confirm){setError("Passwords do not match.");return;} setBusy(true);
   try{
-   if(register){const {data,error}=await supabase.auth.signUp({email:email.trim(),password,options:{data:{full_name:name.trim(),phone:phone.trim(),registration_number:regNo.trim(),department}}});
+   if(register){const {data,error}=await supabase.auth.signUp({email:email.trim(),password,options:{data:{full_name:name.trim(),phone:phone.trim(),crn_number:regNo.trim(),department}}});
     if(error)throw error; if(data.session)onAuthenticated?.(data.session);else setNotice("Account created. Check your email to confirm it, then sign in.");
    }else{const {data,error}=await supabase.auth.signInWithPassword({email:email.trim(),password});if(error)throw error;
     const {data:profile,error:pe}=await supabase.from("profiles").select("role,full_name").eq("id",data.user.id).single();
@@ -26,7 +26,7 @@ export default function AuthPage({ mode, onAuthenticated }) {
  {register&&<label>Full name<input value={name} onChange={e=>setName(e.target.value)} required autoComplete="name" placeholder="Enter your full name"/></label>}
  {register&&<label>Contact number<input type="tel" value={phone} onChange={e=>setPhone(e.target.value)} required autoComplete="tel" inputMode="tel" pattern="[0-9+() -]{7,20}" placeholder="Enter your contact number"/></label>}
  <label>Email address<input type="email" value={email} onChange={e=>setEmail(e.target.value)} required autoComplete="email" placeholder="you@college.edu"/></label>
- {register&&<div className="two-fields"><label>Registration number<input value={regNo} onChange={e=>setRegNo(e.target.value)} required placeholder="Registration no."/></label><label>Department<select value={department} onChange={e=>setDepartment(e.target.value)} required><option value="" disabled>Select department</option><option>Computer Science</option><option>Management</option><option>Engineering</option><option>Other</option></select></label></div>}
+ {register&&<div className="two-fields"><label>CRN Number<input value={regNo} onChange={e=>setRegNo(e.target.value)} required placeholder="Enter CRN number"/></label><label>Department<select value={department} onChange={e=>setDepartment(e.target.value)} required><option value="" disabled>Select department</option><option>Computer Science</option><option>Management</option><option>Engineering</option><option>Other</option></select></label></div>}
  <label>Password<div className="password-input"><input type={show?"text":"password"} value={password} onChange={e=>setPassword(e.target.value)} required minLength={8} autoComplete={register?"new-password":"current-password"} placeholder={register?"Create a password (8+ characters)":"Enter password"}/><button type="button" onClick={()=>setShow(!show)}>{show?"Hide":"Show"}</button></div></label>
  {register&&<label>Confirm password<input type="password" value={confirm} onChange={e=>setConfirm(e.target.value)} required minLength={8} autoComplete="new-password" placeholder="Confirm password"/></label>}
  {register&&<label className="terms"><input type="checkbox" required/> I agree to the portal terms and privacy policy.</label>}
