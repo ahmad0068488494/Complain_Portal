@@ -1,8 +1,19 @@
 import { useState } from "react";
 import { supabase } from "../lib/supabase.js";
 
-const statusLabels = { pending: "Pending", in_progress: "In Progress", resolved: "Resolved", rejected: "Rejected" };
-const dateLabel = value => value ? new Date(value).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }) : "—";
+const statusLabels = {
+  pending: "Pending",
+  in_progress: "In Progress",
+  resolved: "Resolved",
+  rejected: "Rejected",
+};
+const dateLabel = (value) =>
+  value
+    ? new Date(value).toLocaleString(undefined, {
+        dateStyle: "medium",
+        timeStyle: "short",
+      })
+    : "—";
 
 export default function TrackComplaint() {
   const [id, setId] = useState("");
@@ -22,23 +33,31 @@ export default function TrackComplaint() {
       return;
     }
     if (!supabase) {
-      setError("Live tracking is not configured. Connect Supabase to enable complaint tracking.");
+      setError(
+        "Live tracking is not configured. Connect Supabase to enable complaint tracking.",
+      );
       return;
     }
     setLoading(true);
-    const { data, error: lookupError } = await supabase
-      .rpc("track_complaint_by_reference", { p_reference_id: referenceId });
+    const { data, error: lookupError } = await supabase.rpc(
+      "track_complaint_by_reference",
+      { p_reference_id: referenceId },
+    );
     setLoading(false);
     setSearched(true);
     if (lookupError) {
-      setError(lookupError.message.includes("reference_id")
-        ? "Tracking setup is incomplete. Please apply the reference_id database migration."
-        : "Unable to check this complaint right now. Please try again.");
+      setError(
+        lookupError.message.includes("reference_id")
+          ? "Tracking setup is incomplete. Please apply the reference_id database migration."
+          : "Unable to check this complaint right now. Please try again.",
+      );
       return;
     }
     const result = Array.isArray(data) ? data[0] : data;
     if (!result) {
-      setError("No complaint was found for that ID. Check the ID and try again.");
+      setError(
+        "No complaint was found for that ID. Check the ID and try again.",
+      );
       return;
     }
     setComplaint(result);
@@ -60,24 +79,59 @@ export default function TrackComplaint() {
           <input
             id="complaint-id"
             value={id}
-            onChange={e => { setId(e.target.value); setError(""); setComplaint(null); setSearched(false); }}
+            onChange={(e) => {
+              setId(e.target.value);
+              setError("");
+              setComplaint(null);
+              setSearched(false);
+            }}
             placeholder="e.g. CP-2026-A7K92X"
             autoComplete="off"
             required
           />
-          {error && <p className="error" role="alert">{error}</p>}
+          {error && (
+            <p className="error" role="alert">
+              {error}
+            </p>
+          )}
           <button className="btn btn-primary" type="submit" disabled={loading}>
             {loading ? "Checking…" : "Check status →"}
           </button>
-          {complaint && <section className="track-result" aria-live="polite">
-            <div className="track-result-heading"><div><small>COMPLAINT REFERENCE</small><h3>{complaint.reference_id}</h3></div><span className={"status-pill status-" + complaint.status}>{statusLabels[complaint.status] || complaint.status}</span></div>
-            <h3>{complaint.title}</h3>
-            <p><strong>Category:</strong> {complaint.category || "—"}</p>
-            <p><strong>Submitted:</strong> {dateLabel(complaint.created_at)}</p>
-            {complaint.updated_at && <p><strong>Last updated:</strong> {dateLabel(complaint.updated_at)}</p>}
-            {complaint.admin_remarks && <p className="track-admin-update"><strong>Latest update:</strong> {complaint.admin_remarks}</p>}
-          </section>}
-          <small>Only basic tracking details are shown here. Keep your reference ID private.</small>
+          {complaint && (
+            <section className="track-result" aria-live="polite">
+              <div className="track-result-heading">
+                <div>
+                  <small>COMPLAINT REFERENCE</small>
+                  <h3>{complaint.reference_id}</h3>
+                </div>
+                <span className={"status-pill status-" + complaint.status}>
+                  {statusLabels[complaint.status] || complaint.status}
+                </span>
+              </div>
+              <h3>{complaint.title}</h3>
+              <p>
+                <strong>Category:</strong> {complaint.category || "—"}
+              </p>
+              <p>
+                <strong>Submitted:</strong> {dateLabel(complaint.created_at)}
+              </p>
+              {complaint.updated_at && (
+                <p>
+                  <strong>Last updated:</strong>{" "}
+                  {dateLabel(complaint.updated_at)}
+                </p>
+              )}
+              {complaint.admin_remarks && (
+                <p className="track-admin-update">
+                  <strong>Latest update:</strong> {complaint.admin_remarks}
+                </p>
+              )}
+            </section>
+          )}
+          <small>
+            Only basic tracking details are shown here. Keep your reference ID
+            private.
+          </small>
         </form>
       </section>
     </>

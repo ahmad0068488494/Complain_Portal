@@ -1,12 +1,133 @@
-import {useEffect,useState} from "react";
-import Header from "./components/Header.jsx";import Footer from "./components/Footer.jsx";import Home from "./pages/Home.jsx";import About from "./pages/About.jsx";import Services from "./pages/Services.jsx";import AuthPage from "./pages/AuthPage.jsx";import TrackComplaint from "./pages/TrackComplaint.jsx";import HelpFAQs from "./pages/HelpFAQs.jsx";import StudentDashboard from "./pages/StudentDashboard.jsx";import AdminDashboard from "./pages/AdminDashboard.jsx";import {supabase} from "./lib/supabase.js";import "./index.css";
-const views=["home","about","services","login","register","track","faqs","dashboard"];
-export default function App(){
- const [view,setView]=useState(()=>views.includes(location.hash.slice(1))?location.hash.slice(1):"home");const [session,setSession]=useState(null);const [profile,setProfile]=useState(null);const [ready,setReady]=useState(false);
- useEffect(()=>{const hash=()=>setView(views.includes(location.hash.slice(1))?location.hash.slice(1):"home");window.addEventListener("hashchange",hash);return()=>window.removeEventListener("hashchange",hash);},[]);
- useEffect(()=>{if(!supabase){setReady(true);return;}let alive=true;supabase.auth.getSession().then(async({data})=>{if(!alive)return;setSession(data.session);if(data.session?.user){const {data:p}=await supabase.from("profiles").select("role,full_name").eq("id",data.session.user.id).maybeSingle();if(alive)setProfile(p||null);}if(alive)setReady(true);});const {data:sub}=supabase.auth.onAuthStateChange((_e,s)=>{setSession(s);if(!s)setProfile(null);});return()=>{alive=false;sub.subscription.unsubscribe();};},[]);
- async function authenticated(s,p){setSession(s);if(p)setProfile(p);else if(s?.user&&supabase){const {data}=await supabase.from("profiles").select("role,full_name").eq("id",s.user.id).maybeSingle();setProfile(data||null);}location.hash="dashboard";setView("dashboard");}
- async function signOut(){if(supabase)await supabase.auth.signOut();setSession(null);setProfile(null);location.hash="home";setView("home");}
- let page;if(view==="dashboard")page=ready&&session&&profile?(profile.role === "admin" ? <AdminDashboard session={session} profile={profile} onSignOut={signOut}/> : <StudentDashboard session={session} profile={profile} onSignOut={signOut}/>):<section className="section"><h2>Sign in required</h2><p>Please log in to access your dashboard.</p><a className="btn btn-primary" href="#login">Go to login</a></section>;else page={home:<Home/>,about:<About/>,services:<Services/>,track:<TrackComplaint/>,login:<AuthPage mode="login" onAuthenticated={authenticated}/>,register:<AuthPage mode="register" onAuthenticated={authenticated}/>,faqs:<HelpFAQs/>}[view]||<Home/>;
- return <div className="app-shell"><Header active={view} session={session}/><main>{page}</main><Footer/></div>;
+import { useEffect, useState } from "react";
+import Header from "./components/Header.jsx";
+import Footer from "./components/Footer.jsx";
+import Home from "./pages/Home.jsx";
+import About from "./pages/About.jsx";
+import Services from "./pages/Services.jsx";
+import AuthPage from "./pages/AuthPage.jsx";
+import TrackComplaint from "./pages/TrackComplaint.jsx";
+import HelpFAQs from "./pages/HelpFAQs.jsx";
+import StudentDashboard from "./pages/StudentDashboard.jsx";
+import AdminDashboard from "./pages/AdminDashboard.jsx";
+import { supabase } from "./lib/supabase.js";
+import "./index.css";
+const views = [
+  "home",
+  "about",
+  "services",
+  "login",
+  "register",
+  "track",
+  "faqs",
+  "dashboard",
+];
+export default function App() {
+  const [view, setView] = useState(() =>
+    views.includes(location.hash.slice(1)) ? location.hash.slice(1) : "home",
+  );
+  const [session, setSession] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    const hash = () =>
+      setView(
+        views.includes(location.hash.slice(1))
+          ? location.hash.slice(1)
+          : "home",
+      );
+    window.addEventListener("hashchange", hash);
+    return () => window.removeEventListener("hashchange", hash);
+  }, []);
+  useEffect(() => {
+    if (!supabase) {
+      setReady(true);
+      return;
+    }
+    let alive = true;
+    supabase.auth.getSession().then(async ({ data }) => {
+      if (!alive) return;
+      setSession(data.session);
+      if (data.session?.user) {
+        const { data: p } = await supabase
+          .from("profiles")
+          .select("role,full_name")
+          .eq("id", data.session.user.id)
+          .maybeSingle();
+        if (alive) setProfile(p || null);
+      }
+      if (alive) setReady(true);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+      setSession(s);
+      if (!s) setProfile(null);
+    });
+    return () => {
+      alive = false;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
+  async function authenticated(s, p) {
+    setSession(s);
+    if (p) setProfile(p);
+    else if (s?.user && supabase) {
+      const { data } = await supabase
+        .from("profiles")
+        .select("role,full_name")
+        .eq("id", s.user.id)
+        .maybeSingle();
+      setProfile(data || null);
+    }
+    location.hash = "dashboard";
+    setView("dashboard");
+  }
+  async function signOut() {
+    if (supabase) await supabase.auth.signOut();
+    setSession(null);
+    setProfile(null);
+    location.hash = "home";
+    setView("home");
+  }
+  let page;
+  if (view === "dashboard")
+    page =
+      ready && session && profile ? (
+        profile.role === "admin" ? (
+          <AdminDashboard
+            session={session}
+            profile={profile}
+            onSignOut={signOut}
+          />
+        ) : (
+          <StudentDashboard
+            session={session}
+            profile={profile}
+            onSignOut={signOut}
+          />
+        )
+      ) : (
+        <section className="section">
+          <h2>Sign in required</h2>
+          <p>Please log in to access your dashboard.</p>
+          <a className="btn btn-primary" href="#login">
+            Go to login
+          </a>
+        </section>
+      );
+  else
+    page = {
+      home: <Home />,
+      about: <About />,
+      services: <Services />,
+      track: <TrackComplaint />,
+      login: <AuthPage mode="login" onAuthenticated={authenticated} />,
+      register: <AuthPage mode="register" onAuthenticated={authenticated} />,
+      faqs: <HelpFAQs />,
+    }[view] || <Home />;
+  return (
+    <div className="app-shell">
+      <Header active={view} session={session} />
+      <main>{page}</main>
+      <Footer />
+    </div>
+  );
 }
