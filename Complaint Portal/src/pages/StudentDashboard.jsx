@@ -400,9 +400,9 @@ export default function StudentDashboard({ session, profile, onSignOut }) {
                   </strong>
                 </div>
                 <div>
-                  <small>REGISTRATION NUMBER</small>
+                  <small>CRN NUMBER</small>
                   <strong>
-                    {session?.user?.user_metadata?.registration_number ||
+                    {session?.user?.user_metadata?.crn_number ||
                       "Not provided"}
                   </strong>
                 </div>
