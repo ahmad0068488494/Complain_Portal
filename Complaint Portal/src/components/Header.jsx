@@ -8,7 +8,7 @@ const nav = [
 ];
 
 const serviceLinks = [
-  ["Raise a Complaint", "register", "✎"],
+  ["Raise a Complaint", "dashboard", "✎"],
   ["Grievance Categories", "services", "▦"],
   ["Help & FAQs", "faqs", "?"],
 ];
