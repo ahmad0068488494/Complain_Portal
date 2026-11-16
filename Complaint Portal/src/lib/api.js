@@ -1,0 +1,28 @@
+export async function apiRequest(path, { session, method = "GET", body } = {}) {
+  const token = session?.access_token;
+  if (!token) {
+    throw new Error("Your session has expired. Please sign in again.");
+  }
+
+  const headers = { Authorization: `Bearer ${token}` };
+  if (body !== undefined) headers["Content-Type"] = "application/json";
+
+  let response;
+  try {
+    response = await fetch(`/api${path}`, {
+      method,
+      headers,
+      ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+    });
+  } catch {
+    throw new Error(
+      "Unable to reach the Complaint Portal API. Make sure the backend server is running.",
+    );
+  }
+
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(payload.error || `Request failed (${response.status}).`);
+  }
+  return payload;
+}
