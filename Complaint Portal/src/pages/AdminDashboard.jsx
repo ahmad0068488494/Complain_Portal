@@ -113,8 +113,8 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
     e.preventDefault();
     setError("");
     setNotice("");
-    const referenceId = `CP-${new Date().getFullYear()}-${crypto.randomUUID().replace(/-/g, "").slice(0, 8).toUpperCase()}`;
     if (demoMode || !supabase) {
+      const referenceId = `CP-${new Date().getFullYear()}-${crypto.randomUUID().replace(/-/g, "").slice(0, 8).toUpperCase()}`;
       setItems((old) => [
         {
           id: "DEMO-" + Date.now(),
@@ -136,16 +136,17 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
       );
       return;
     }
-    const { error: insertError } = await supabase
+    const { data: createdComplaint, error: insertError } = await supabase
       .from("complaints")
       .insert({
-        reference_id: referenceId,
         user_id: session.user.id,
         title: title.trim(),
         description: description.trim(),
         category,
         status: "pending",
-      });
+      })
+      .select("reference_id")
+      .single();
     if (insertError) {
       setError(insertError.message);
       return;
@@ -153,7 +154,7 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
     setTitle("");
     setDescription("");
     setNotice(
-      `Complaint submitted successfully. Your Complaint ID is ${referenceId}. Save this ID to track your complaint.`,
+      `Complaint submitted successfully. Your database Reference ID is ${createdComplaint.reference_id}. Save this ID to track your complaint.`,
     );
     await load();
   }
@@ -191,6 +192,8 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
             x.description +
             " " +
             x.category +
+            " " +
+            (x.reference_id || "") +
             " " +
             (x.student_name || "")
           )
@@ -635,11 +638,8 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
                 </div>
                 <p>{x.description}</p>
                 <div className="dashboard-record-meta">
-                  <small>
-                    Reference:{" "}
-                    {String(x.id).startsWith("DEMO-")
-                      ? x.id
-                      : String(x.id).slice(0, 8)}
+                  <small className="complaint-reference-id">
+                    <strong>Reference ID:</strong> {x.reference_id || x.id}
                   </small>
                   <small>Submitted {dateLabel(x.created_at)}</small>
                 </div>
