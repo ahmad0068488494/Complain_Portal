@@ -5,7 +5,6 @@ import { requireAuth } from "../middleware/auth.js";
 const router = Router();
 router.use(requireAuth);
 
-// Expected table: complaints with user_id, title, description, category, status.
 router.get("/", async (req, res) => {
   const { data, error } = await supabase
     .from("complaints")
@@ -13,14 +12,31 @@ router.get("/", async (req, res) => {
     .eq("user_id", req.user.id)
     .order("created_at", { ascending: false });
 
-  if (error) return res.status(500).json({ error: "Could not fetch complaints." });
-  res.json({ complaints: data });
+  if (error) {
+    console.error("Student complaints query failed:", error);
+    return res.status(500).json({ error: "Could not fetch your complaints." });
+  }
+
+  res.json({ complaints: data || [] });
 });
 
 router.post("/", async (req, res) => {
   const { title, description, category } = req.body || {};
-  if (![title, description, category].every((value) => typeof value === "string" && value.trim())) {
-    return res.status(400).json({ error: "title, description, and category are required." });
+
+  if (
+    typeof title !== "string" ||
+    title.trim().length < 3 ||
+    title.trim().length > 160 ||
+    typeof description !== "string" ||
+    description.trim().length < 10 ||
+    description.trim().length > 10000 ||
+    typeof category !== "string" ||
+    category.trim().length < 2 ||
+    category.trim().length > 80
+  ) {
+    return res.status(400).json({
+      error: "Enter a title (3–160 characters), description (10–10000 characters), and valid category.",
+    });
   }
 
   const { data, error } = await supabase
@@ -35,7 +51,11 @@ router.post("/", async (req, res) => {
     .select("*")
     .single();
 
-  if (error) return res.status(500).json({ error: "Could not create complaint." });
+  if (error) {
+    console.error("Complaint creation failed:", error);
+    return res.status(500).json({ error: "Could not create your complaint." });
+  }
+
   res.status(201).json({ complaint: data });
 });
 
