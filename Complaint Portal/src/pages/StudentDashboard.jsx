@@ -213,19 +213,23 @@ export default function StudentDashboard({ session, profile, onSignOut }) {
       setNotice("Demo status changed locally only.");
       return;
     }
+
     setError("");
     setNotice("");
-    const { error: updateError } = await supabase
-      .from("complaints")
-      .update({
-        status,
-        ...(remarks[id]?.trim() ? { admin_remarks: remarks[id].trim() } : {}),
-      })
-      .eq("id", id);
-    if (updateError) setError(updateError.message);
-    else {
+    try {
+      const currentComplaint = items.find((item) => item.id === id);
+      await apiRequest(`/admin/complaints/${encodeURIComponent(id)}/status`, {
+        session,
+        method: "PATCH",
+        body: {
+          status,
+          admin_remarks: remarks[id] ?? currentComplaint?.admin_remarks ?? "",
+        },
+      });
       setNotice("Complaint updated.");
       await load();
+    } catch (requestError) {
+      setError(requestError.message || "Could not update the complaint.");
     }
   }
 
