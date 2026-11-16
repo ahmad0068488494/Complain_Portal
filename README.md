@@ -23,7 +23,7 @@ Production Supabase project: `Complaint Portal Production` (`tnpitjbmrldctswebee
 
 ## 2. Configure and start the frontend
 
-Create `Complaint Portal/.env` using `Complaint Portal/.env.example` as a reference and set `VITE_SUPABASE_URL` plus `VITE_SUPABASE_PUBLISHABLE_KEY`. Use only the publishable key in frontend variables; never put a service-role/secret key in the frontend. After changing environment variables, restart Vite.
+Create `Complaint Portal/.env` using `Complaint Portal/.env.example` as a reference and set `VITE_SUPABASE_URL` plus `VITE_SUPABASE_PUBLISHABLE_KEY`. For a separately hosted production API, optionally set `VITE_API_BASE_URL` to the backend origin (for example, `https://api.example.com`); leave it empty for the local Vite proxy. Use only the publishable key in frontend variables; never put a service-role/secret key in the frontend. After changing environment variables, restart Vite.
 
 Install the frontend dependency and start Vite:
 
@@ -49,7 +49,6 @@ Edit `backend/.env` and replace the placeholder values:
 PORT=5000
 FRONTEND_URL=http://localhost:5173
 SUPABASE_URL=https://tnpitjbmrldctswebeeo.supabase.co
-SUPABASE_ANON_KEY=sb_publishable_iA6jKx8Fiz1vxgtZstEjww_52vNUhE-
 SUPABASE_SERVICE_ROLE_KEY=YOUR_REAL_SERVER_ONLY_SECRET_KEY
 ```
 
@@ -85,6 +84,14 @@ Open the local URL printed by Vite, usually http://localhost:5173. The Vite deve
 - `PATCH /api/admin/complaints/:id/status` — update status (requires an admin account)
 
 Protected routes expect `Authorization: Bearer <Supabase access token>`.
+
+## Application data flow
+
+- React uses Supabase Auth directly for sign-in/session management.
+- Student and admin complaint CRUD operations go through the Express API (`/api`), which verifies the Supabase access token before querying PostgreSQL with the server-only service key.
+- Student status refreshes continue to use Supabase Realtime; only the student's own complaint rows are subscribed to.
+- The public Reference ID tracking page continues to call the restricted `track_complaint_by_reference` RPC directly, because it supports unauthenticated tracking and returns only selected progress fields.
+- In local development, Vite proxies `/api` to `http://localhost:5000`. For separate production hosting, set `VITE_API_BASE_URL` and configure `FRONTEND_URL` on the backend to the deployed frontend origin.
 
 ## Complaint reference and tracking
 
