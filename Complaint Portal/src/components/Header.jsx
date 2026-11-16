@@ -51,7 +51,12 @@ export default function Header({ active, session }) {
                   key={id}
                   href={"#" + (label === "Raise a Complaint" ? (session ? "dashboard" : "login") : id)}
                   role="menuitem"
-                  onClick={() => setServicesOpen(false)}
+                  onClick={() => {
+                    if (label === "Raise a Complaint" && session) {
+                      sessionStorage.setItem("focusComplaintForm", "true");
+                    }
+                    setServicesOpen(false);
+                  }}
                 >
                   <span className="services-menu-icon" aria-hidden="true">{icon}</span>
                   <span>{label}</span>

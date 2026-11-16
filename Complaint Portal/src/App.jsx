@@ -117,7 +117,7 @@ export default function App() {
     page = {
       home: <Home />,
       about: <About />,
-      services: <Services />,
+      services: <Services session={session} profile={profile} />,
       track: <TrackComplaint />,
       login: <AuthPage mode="login" onAuthenticated={authenticated} />,
       register: <AuthPage mode="register" onAuthenticated={authenticated} />,

@@ -50,9 +50,10 @@ const categories = [
     "Concerns that do not fit another category.",
   ],
 ];
-export default function Services() {
+export default function Services({ session, profile }) {
   const [selected, setSelected] = useState(null),
-    [search, setSearch] = useState("");
+    [search, setSearch] = useState(""),
+    [accessMessage, setAccessMessage] = useState("");
   const filtered = categories.filter((c) =>
     (c[2] + " " + c[3]).toLowerCase().includes(search.toLowerCase()),
   );
@@ -81,15 +82,27 @@ export default function Services() {
                 <li>Submit and save your complaint reference</li>
                 <li>Sign in to follow progress</li>
               </ol>
-              <a
+              <button
+                type="button"
                 className="btn btn-primary"
-                href="#register"
-                onClick={() =>
-                  sessionStorage.setItem("selectedComplaintCategory", active[0])
-                }
+                onClick={() => {
+                  setAccessMessage("");
+                  if (session && profile?.role === "admin") {
+                    setAccessMessage(
+                      "Complaint submission is available through student accounts only.",
+                    );
+                    return;
+                  }
+                  sessionStorage.setItem("selectedComplaintCategory", active[0]);
+                  sessionStorage.setItem("focusComplaintForm", "true");
+                  window.location.hash = session ? "dashboard" : "login";
+                }}
               >
                 Raise a Complaint →
-              </a>
+              </button>
+              {accessMessage && (
+                <p className="error" role="alert">{accessMessage}</p>
+              )}
             </div>
           </>
         ) : (
