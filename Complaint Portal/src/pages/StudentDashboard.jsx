@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "../lib/supabase.js";
+import { apiRequest } from "../lib/api.js";
 
 const labels = {
   pending: "Pending",
@@ -100,28 +101,23 @@ export default function StudentDashboard({ session, profile, onSignOut }) {
     setLoading(true);
     setError("");
     if (!supabase) {
-      setItems(
-        demoComplaints.filter((x) => admin || x.user_id === "demo-student"),
-      );
+      setItems(demoComplaints.filter((x) => x.user_id === "demo-student"));
       setDemoMode(true);
       setLoading(false);
       return;
     }
-    let q = supabase
-      .from("complaints")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (!admin) q = q.eq("user_id", session.user.id);
-    const { data, error: fetchError } = await q;
-    if (fetchError) {
-      setError(fetchError.message);
-      setItems([]);
-    } else {
-      setItems(data || []);
+
+    try {
+      const result = await apiRequest("/complaints", { session });
+      setItems(result.complaints || []);
       setDemoMode(false);
+    } catch (requestError) {
+      setError(requestError.message || "Could not fetch your complaints.");
+      setItems([]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-  }, [admin, session?.user?.id]);
+  }, [session]);
 
   useEffect(() => {
     load();
@@ -187,28 +183,28 @@ export default function StudentDashboard({ session, profile, onSignOut }) {
       );
       return;
     }
-    const { data: createdComplaint, error: insertError } = await supabase
-      .from("complaints")
-      .insert({
-        user_id: session.user.id,
-        title: title.trim(),
-        description: description.trim(),
-        category,
-        status: "pending",
-      })
-      .select("id, reference_id, title, description, category, status, created_at")
-      .single();
-    if (insertError) {
-      setError(insertError.message);
-      return;
+
+    try {
+      const result = await apiRequest("/complaints", {
+        session,
+        method: "POST",
+        body: {
+          title: title.trim(),
+          description: description.trim(),
+          category,
+        },
+      });
+      const createdComplaint = result.complaint;
+      setTitle("");
+      setDescription("");
+      setItems((old) => [createdComplaint, ...old]);
+      setNotice(
+        `Complaint submitted successfully. Your database reference ID is ${createdComplaint.reference_id}.`,
+      );
+      await load();
+    } catch (requestError) {
+      setError(requestError.message || "Could not submit your complaint.");
     }
-    setTitle("");
-    setDescription("");
-    setItems((old) => [createdComplaint, ...old]);
-    setNotice(
-      `Complaint submitted successfully. Your database reference ID is ${createdComplaint.reference_id}.`,
-    );
-    await load();
   }
 
   async function changeStatus(id, status) {
