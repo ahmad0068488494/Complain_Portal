@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "../lib/supabase.js";
+import { apiRequest } from "../lib/api.js";
 
 const labels = {
   pending: "Pending",
@@ -82,28 +83,23 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
     setLoading(true);
     setError("");
     if (!supabase) {
-      setItems(
-        demoComplaints.filter((x) => admin || x.user_id === "demo-student"),
-      );
+      setItems(demoComplaints);
       setDemoMode(true);
       setLoading(false);
       return;
     }
-    let q = supabase
-      .from("complaints")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (!admin) q = q.eq("user_id", session.user.id);
-    const { data, error: fetchError } = await q;
-    if (fetchError) {
-      setError(fetchError.message);
-      setItems([]);
-    } else {
-      setItems(data || []);
+
+    try {
+      const result = await apiRequest("/admin/complaints", { session });
+      setItems(result.complaints || []);
       setDemoMode(false);
+    } catch (requestError) {
+      setError(requestError.message || "Could not fetch complaints.");
+      setItems([]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-  }, [admin, session?.user?.id]);
+  }, [session]);
 
   useEffect(() => {
     load();
@@ -131,32 +127,23 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
       ]);
       setTitle("");
       setDescription("");
-      setNotice(
-        `Demo complaint ID: ${referenceId}. This is a local preview only, not saved to the database.`,
-      );
+      setNotice(`Demo complaint ID: ${referenceId}. This is a local preview only.`);
       return;
     }
-    const { data: createdComplaint, error: insertError } = await supabase
-      .from("complaints")
-      .insert({
-        user_id: session.user.id,
-        title: title.trim(),
-        description: description.trim(),
-        category,
-        status: "pending",
-      })
-      .select("reference_id")
-      .single();
-    if (insertError) {
-      setError(insertError.message);
-      return;
+
+    try {
+      const result = await apiRequest("/complaints", {
+        session,
+        method: "POST",
+        body: { title: title.trim(), description: description.trim(), category },
+      });
+      setTitle("");
+      setDescription("");
+      setNotice(`Complaint submitted. Reference ID: ${result.complaint.reference_id}.`);
+      await load();
+    } catch (requestError) {
+      setError(requestError.message || "Could not submit the complaint.");
     }
-    setTitle("");
-    setDescription("");
-    setNotice(
-      `Complaint submitted successfully. Your database Reference ID is ${createdComplaint.reference_id}. Save this ID to track your complaint.`,
-    );
-    await load();
   }
 
   async function changeStatus(id, status) {
@@ -165,19 +152,22 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
       setNotice("Demo status changed locally only.");
       return;
     }
+
     setError("");
     setNotice("");
-    const { error: updateError } = await supabase
-      .from("complaints")
-      .update({
-        status,
-        ...(remarks[id]?.trim() ? { admin_remarks: remarks[id].trim() } : {}),
-      })
-      .eq("id", id);
-    if (updateError) setError(updateError.message);
-    else {
-      setNotice("Complaint updated.");
+    try {
+      await apiRequest(`/admin/complaints/${encodeURIComponent(id)}/status`, {
+        session,
+        method: "PATCH",
+        body: {
+          status,
+          admin_remarks: remarks[id]?.trim() ?? "",
+        },
+      });
+      setNotice("Complaint status and administrator remarks updated.");
       await load();
+    } catch (requestError) {
+      setError(requestError.message || "Could not update the complaint.");
     }
   }
 
