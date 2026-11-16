@@ -1,3 +1,5 @@
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
+
 export async function apiRequest(path, { session, method = "GET", body } = {}) {
   const token = session?.access_token;
   if (!token) {
@@ -9,7 +11,7 @@ export async function apiRequest(path, { session, method = "GET", body } = {}) {
 
   let response;
   try {
-    response = await fetch(`/api${path}`, {
+    response = await fetch(`${API_BASE_URL}/api${path}`, {
       method,
       headers,
       ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
