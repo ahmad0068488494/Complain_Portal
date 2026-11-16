@@ -18,6 +18,17 @@ const categories = [
   "Transportation",
   "Other Issues",
 ];
+const categoryById = {
+  academic: "Academic Issues",
+  infrastructure: "Infrastructure & Facilities",
+  faculty: "Faculty & Staff",
+  hostel: "Hostel & Accommodation",
+  food: "Food & Canteen",
+  safety: "Safety & Security",
+  fees: "Fees & Administration",
+  transport: "Transportation",
+  other: "Other Issues",
+};
 const demoComplaints = [
   {
     id: "DEMO-001",
@@ -71,7 +82,14 @@ export default function StudentDashboard({ session, profile, onSignOut }) {
   const [notice, setNotice] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState(categories[1]);
+  const [category, setCategory] = useState(() => {
+    const selectedCategory = sessionStorage.getItem("selectedComplaintCategory");
+    if (selectedCategory) {
+      sessionStorage.removeItem("selectedComplaintCategory");
+      return categoryById[selectedCategory] || categories[1];
+    }
+    return categories[1];
+  });
   const [filter, setFilter] = useState("all");
   const [query, setQuery] = useState("");
   const [profileName, setProfileName] = useState(profile?.full_name || "");
@@ -108,6 +126,17 @@ export default function StudentDashboard({ session, profile, onSignOut }) {
   useEffect(() => {
     load();
   }, [load]);
+
+  useEffect(() => {
+    if (sessionStorage.getItem("focusComplaintForm") === "true") {
+      sessionStorage.removeItem("focusComplaintForm");
+      requestAnimationFrame(() => {
+        document
+          .getElementById("raise-complaint-form")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }, []);
 
   async function create(e) {
     e.preventDefault();
