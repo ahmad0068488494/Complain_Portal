@@ -296,7 +296,7 @@ nav a:hover {
     flex: 0 0 auto;
   }
   .services-dropdown {
-    top: calc(100% + 4px);
+    top: 100%;
     left: 0;
   }
 }
