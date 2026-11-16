@@ -42,7 +42,7 @@ export default function Header({ active, session }) {
               if (event.key === "Escape") setServicesOpen(false);
             }}
           >
-            Services <span className="services-chevron" aria-hidden="true">⌄</span>
+            Services <span className="services-chevron" aria-hidden="true"></span>
           </button>
           {servicesOpen && (
             <div className="services-dropdown" role="menu">
