@@ -28,7 +28,10 @@ export default function Header({ active, session }) {
             {label}
           </a>
         ))}
-        <div className={`services-nav ${servicesOpen ? "is-open" : ""}`}>
+        <div
+          className={`services-nav ${servicesOpen ? "is-open" : ""}`}
+          onMouseLeave={() => setServicesOpen(false)}
+        >
           <button
             type="button"
             className={`services-toggle ${active === "services" || active === "faqs" ? "active" : ""}`}
