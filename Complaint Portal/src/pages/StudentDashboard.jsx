@@ -128,6 +128,28 @@ export default function StudentDashboard({ session, profile, onSignOut }) {
   }, [load]);
 
   useEffect(() => {
+    if (!supabase || !session?.user?.id) return undefined;
+
+    const channel = supabase
+      .channel("student-complaints-" + session.user.id)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "complaints",
+          filter: "user_id=eq." + session.user.id,
+        },
+        () => load(),
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [load, session?.user?.id]);
+
+  useEffect(() => {
     if (sessionStorage.getItem("focusComplaintForm") === "true") {
       sessionStorage.removeItem("focusComplaintForm");
       requestAnimationFrame(() => {
@@ -222,6 +244,8 @@ export default function StudentDashboard({ session, profile, onSignOut }) {
             x.description +
             " " +
             x.category +
+            " " +
+            (x.reference_id || "") +
             " " +
             (x.student_name || "")
           )
