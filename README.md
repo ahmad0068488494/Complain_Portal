@@ -86,9 +86,16 @@ Open the local URL printed by Vite, usually http://localhost:5173. The Vite deve
 
 Protected routes expect `Authorization: Bearer <Supabase access token>`.
 
-## Important current scope
+## Complaint reference and tracking
 
-The production Supabase database schema and local backend starter are in place. The existing login/register frontend is still UI-only and is **not yet connected to Supabase Auth**. Student/admin dashboards, account registration/login integration, complaint forms, and end-to-end tests are the next development steps. Do not treat the UI role selector as authorization; admin access must be granted in the database by a trusted project administrator.
+- Supabase PostgreSQL generates each complaint's `reference_id` automatically; frontend clients must never supply it for live inserts.
+- Student and admin dashboards display and search the same database-generated Reference ID.
+- Admin status updates are written to the shared `complaints` row and delivered to the student's dashboard through Supabase Realtime.
+- The public tracking page looks up a complaint by Reference ID and returns only its basic progress fields and administrator remarks.
+- Existing Reference IDs are retained when the schema upgrade is applied; only missing IDs are backfilled.
+- Keep Row Level Security enabled. Admin authorization must be granted through the trusted `profiles.role` value, not a user-editable registration field.
+
+The production project already has the `reference_id` column and tracking function. The schema file also includes idempotent upgrade statements for existing installations.
 
 ## Security notes
 
