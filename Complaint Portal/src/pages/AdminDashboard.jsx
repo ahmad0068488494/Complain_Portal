@@ -161,7 +161,7 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
         method: "PATCH",
         body: {
           status,
-          admin_remarks: remarks[id]?.trim() ?? "",
+          admin_remarks: remarks[id] ?? items.find((item) => item.id === id)?.admin_remarks ?? "",
         },
       });
       setNotice("Complaint status and administrator remarks updated.");
