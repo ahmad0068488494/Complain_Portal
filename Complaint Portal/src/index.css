@@ -1334,3 +1334,32 @@ h1, h2, h3, h4, h5, h6,
   .admin-student-details { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .admin-main-content .dashboard-top { align-items: flex-start; flex-direction: column; }
 }
+
+
+.admin-directory-tools {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  min-width: min(100%, 360px);
+}
+.admin-directory-tools input {
+  width: min(100%, 300px);
+  min-width: 0;
+  min-height: 40px;
+  padding: 9px 11px;
+  border: 1px solid #d5e0ee;
+  border-radius: 8px;
+  background: #fcfdff;
+  color: #19395f;
+  font: inherit;
+  font-size: 11px;
+}
+@media (max-width: 520px) {
+  .admin-directory-tools {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .admin-directory-tools input { width: 100%; }
+}

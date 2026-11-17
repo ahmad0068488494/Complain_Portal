@@ -83,14 +83,16 @@ router.get("/complaints", async (_req, res) => {
 
 router.patch("/complaints/:id/assignment", async (req, res) => {
   const { assigned_to } = req.body || {};
-  if (assigned_to !== null && assigned_to !== "" && (typeof assigned_to !== "string" || !/^[0-9a-f-]{36}$/i.test(assigned_to))) {
+  const requestedAssignee = assigned_to || null;
+  const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  if (requestedAssignee !== null && (typeof requestedAssignee !== "string" || !uuidPattern.test(requestedAssignee))) {
     return res.status(400).json({ error: "Choose a valid administrator account." });
   }
 
   let nextAssignee = null;
-  if (assigned_to) {
+  if (requestedAssignee) {
     const { data, error } = await supabase.from("profiles")
-      .select("id,role").eq("id", assigned_to).maybeSingle();
+      .select("id,role").eq("id", requestedAssignee).maybeSingle();
     if (error) return res.status(500).json({ error: "Could not verify the selected administrator." });
     if (!data || data.role !== "admin") {
       return res.status(400).json({ error: "Complaints can only be assigned to an administrator account." });

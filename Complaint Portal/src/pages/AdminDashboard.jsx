@@ -69,6 +69,7 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
   const [items, setItems] = useState([]);
   const [students, setStudents] = useState([]);
   const [staff, setStaff] = useState([]);
+  const [studentQuery, setStudentQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -233,6 +234,22 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
       ),
     [items, filter, query],
   );
+  const visibleStudents = useMemo(() => {
+    const search = studentQuery.trim().toLowerCase();
+    if (!search) return students;
+    return students.filter((student) =>
+      [
+        student.full_name,
+        student.email,
+        student.phone,
+        student.crn_number,
+        student.department,
+        student.course,
+        student.semester,
+      ].filter(Boolean).join(" ").toLowerCase().includes(search)
+    );
+  }, [students, studentQuery]);
+
   const counts = items.reduce(
     (a, x) => ((a[x.status] = (a[x.status] || 0) + 1), a),
     {},
@@ -759,11 +776,22 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
           <section className="dashboard-panel admin-students-panel" id="admin-students">
             <div className="dashboard-panel-title">
               <div><span className="eyebrow">USER MANAGEMENT</span><h2>Registered students</h2><p>Student identity and academic information from the portal profiles.</p></div>
-              <span className="admin-directory-count">{students.length} students</span>
+              <div className="admin-directory-tools">
+                <span className="admin-directory-count">{students.length} students</span>
+                <input
+                  type="search"
+                  aria-label="Search students"
+                  placeholder="Search name, email, CRN or department"
+                  value={studentQuery}
+                  onChange={(e) => setStudentQuery(e.target.value)}
+                />
+              </div>
             </div>
-            {students.length ? (
+            {loading ? (
+              <p className="dashboard-empty">Loading student directory…</p>
+            ) : visibleStudents.length ? (
               <div className="admin-student-grid">
-                {students.map((student) => (
+                {visibleStudents.map((student) => (
                   <article className="admin-student-card" key={student.id}>
                     <div className="admin-student-card-head">
                       <span className="admin-student-avatar">{(student.full_name || "S").slice(0, 1).toUpperCase()}</span>
@@ -780,7 +808,7 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
                 ))}
               </div>
             ) : (
-              <p className="dashboard-empty">No registered student profiles were found.</p>
+              <p className="dashboard-empty">{students.length ? "No students match this search." : "No registered student profiles were found."}</p>
             )}
           </section>
         )}
