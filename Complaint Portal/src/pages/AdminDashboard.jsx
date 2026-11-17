@@ -70,6 +70,7 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
   const [students, setStudents] = useState([]);
   const [staff, setStaff] = useState([]);
   const [studentQuery, setStudentQuery] = useState("");
+  const [expandedStudentId, setExpandedStudentId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -834,34 +835,52 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
               <p className="dashboard-empty">Loading student directory…</p>
             ) : visibleStudents.length ? (
               <div className="admin-student-grid">
-                {visibleStudents.map((student) => (
-                  <article className="admin-student-card" key={student.id}>
-                    <div className="admin-student-card-head">
-                      {student.avatar_signed_url ? (
-                        <img className="admin-student-avatar-image" src={student.avatar_signed_url} alt="" />
-                      ) : (
-                        <span className="admin-student-avatar">{(student.full_name || "S").slice(0, 1).toUpperCase()}</span>
+                {visibleStudents.map((student) => {
+                  const isExpanded = expandedStudentId === student.id;
+                  const detailsId = `admin-student-details-${student.id}`;
+                  return (
+                    <article className={`admin-student-card${isExpanded ? " is-expanded" : ""}`} key={student.id}>
+                      <button
+                        type="button"
+                        className="admin-student-card-trigger"
+                        aria-expanded={isExpanded}
+                        aria-controls={detailsId}
+                        onClick={() => setExpandedStudentId(isExpanded ? null : student.id)}
+                      >
+                        <span className="admin-student-card-head">
+                          {student.avatar_signed_url ? (
+                            <img className="admin-student-avatar-image" src={student.avatar_signed_url} alt="" />
+                          ) : (
+                            <span className="admin-student-avatar">{(student.full_name || "S").slice(0, 1).toUpperCase()}</span>
+                          )}
+                          <span className="admin-student-card-identity">
+                            <strong>{student.full_name || "Student"}</strong>
+                            <small>{student.email || "Email unavailable"}</small>
+                          </span>
+                        </span>
+                        <span className="admin-student-expand-indicator" aria-hidden="true">{isExpanded ? "−" : "+"}</span>
+                      </button>
+                      {isExpanded && (
+                        <div className="admin-student-details" id={detailsId}>
+                          <div><small>CRN NUMBER</small><strong>{student.crn_number || "Not provided"}</strong></div>
+                          <div><small>CONTACT</small><strong>{student.phone || "Not provided"}</strong></div>
+                          <div><small>DEPARTMENT</small><strong>{student.department || "Not provided"}</strong></div>
+                          <div><small>COURSE / SEMESTER</small><strong>{student.course || "Not provided"}{student.semester ? " / " + student.semester : ""}</strong></div>
+                          <div><small>ACADEMIC SESSION</small><strong>{student.academic_session || "Not assigned"}</strong></div>
+                          <div><small>DATE OF BIRTH</small><strong>{student.date_of_birth || "Not provided"}</strong></div>
+                          <div><small>GENDER</small><strong>{student.gender || "Not provided"}</strong></div>
+                          <div><small>ALTERNATE CONTACT</small><strong>{student.alternate_phone || "Not provided"}</strong></div>
+                          <div><small>ALTERNATE EMAIL</small><strong>{student.alternate_email || "Not provided"}</strong></div>
+                          <div><small>CURRENT ADDRESS</small><strong>{student.current_address || "Not provided"}</strong></div>
+                          <div><small>PERMANENT ADDRESS</small><strong>{student.permanent_address || "Not provided"}</strong></div>
+                          <div><small>CITY / STATE</small><strong>{[student.city, student.state].filter(Boolean).join(", ") || "Not provided"}</strong></div>
+                          <div><small>PIN CODE</small><strong>{student.pincode || "Not provided"}</strong></div>
+                          <div><small>REGISTERED ON</small><strong>{dateLabel(student.created_at)}</strong></div>
+                        </div>
                       )}
-                      <div><strong>{student.full_name || "Student"}</strong><small>{student.email || "Email unavailable"}</small></div>
-                    </div>
-                    <div className="admin-student-details">
-                      <div><small>CRN NUMBER</small><strong>{student.crn_number || "Not provided"}</strong></div>
-                      <div><small>CONTACT</small><strong>{student.phone || "Not provided"}</strong></div>
-                      <div><small>DEPARTMENT</small><strong>{student.department || "Not provided"}</strong></div>
-                      <div><small>COURSE / SEMESTER</small><strong>{student.course || "Not provided"}{student.semester ? " / " + student.semester : ""}</strong></div>
-                      <div><small>ACADEMIC SESSION</small><strong>{student.academic_session || "Not assigned"}</strong></div>
-                      <div><small>DATE OF BIRTH</small><strong>{student.date_of_birth || "Not provided"}</strong></div>
-                      <div><small>GENDER</small><strong>{student.gender || "Not provided"}</strong></div>
-                      <div><small>ALTERNATE CONTACT</small><strong>{student.alternate_phone || "Not provided"}</strong></div>
-                      <div><small>ALTERNATE EMAIL</small><strong>{student.alternate_email || "Not provided"}</strong></div>
-                      <div><small>CURRENT ADDRESS</small><strong>{student.current_address || "Not provided"}</strong></div>
-                      <div><small>PERMANENT ADDRESS</small><strong>{student.permanent_address || "Not provided"}</strong></div>
-                      <div><small>CITY / STATE</small><strong>{[student.city, student.state].filter(Boolean).join(", ") || "Not provided"}</strong></div>
-                      <div><small>PIN CODE</small><strong>{student.pincode || "Not provided"}</strong></div>
-                      <div><small>REGISTERED ON</small><strong>{dateLabel(student.created_at)}</strong></div>
-                    </div>
-                  </article>
-                ))}
+                    </article>
+                  );
+                })}
               </div>
             ) : (
               <p className="dashboard-empty">{students.length ? "No students match this search." : "No registered student profiles were found."}</p>
