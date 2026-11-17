@@ -1375,3 +1375,13 @@ h1, h2, h3, h4, h5, h6,
 }
 .admin-save-remark { justify-self: start; min-height: 36px; padding: 7px 12px; }
 .admin-student-details strong { white-space: normal; overflow-wrap: anywhere; word-break: break-word; }
+
+.admin-student-avatar-image {
+  display: block;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #dce6f2;
+}

@@ -20,7 +20,7 @@ async function listAllAuthUsers() {
 router.get("/users", async (_req, res) => {
   const { data: profiles, error: profileError } = await supabase
     .from("profiles")
-    .select("id,full_name,role,phone,crn_number,department,course,semester,academic_session,date_of_birth,gender,alternate_phone,alternate_email,current_address,permanent_address,city,state,pincode,created_at")
+    .select("id,full_name,role,phone,crn_number,department,course,semester,academic_session,date_of_birth,gender,alternate_phone,alternate_email,current_address,permanent_address,city,state,pincode,avatar_url,created_at")
     .in("role", ["student", "admin"])
     .order("full_name", { ascending: true });
 
@@ -37,8 +37,21 @@ router.get("/users", async (_req, res) => {
 
   const emailById = new Map(authUsers.map((user) => [user.id, user.email || ""]));
   const users = (profiles || []).map((person) => ({ ...person, email: emailById.get(person.id) || "" }));
+  const students = await Promise.all(
+    users.filter((person) => person.role === "student").map(async (person) => {
+      if (!person.avatar_url) {
+        const { avatar_url, ...student } = person;
+        return student;
+      }
+      const { data: signed, error: signedError } = await supabase.storage
+        .from("student-avatars")
+        .createSignedUrl(person.avatar_url, 3600);
+      const { avatar_url, ...student } = person;
+      return { ...student, avatar_signed_url: signedError ? "" : signed?.signedUrl || "" };
+    }),
+  );
   res.json({
-    students: users.filter((person) => person.role === "student"),
+    students,
     staff: users.filter((person) => person.role === "admin"),
   });
 });

@@ -837,7 +837,11 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
                 {visibleStudents.map((student) => (
                   <article className="admin-student-card" key={student.id}>
                     <div className="admin-student-card-head">
-                      <span className="admin-student-avatar">{(student.full_name || "S").slice(0, 1).toUpperCase()}</span>
+                      {student.avatar_signed_url ? (
+                        <img className="admin-student-avatar-image" src={student.avatar_signed_url} alt="" />
+                      ) : (
+                        <span className="admin-student-avatar">{(student.full_name || "S").slice(0, 1).toUpperCase()}</span>
+                      )}
                       <div><strong>{student.full_name || "Student"}</strong><small>{student.email || "Email unavailable"}</small></div>
                     </div>
                     <div className="admin-student-details">
@@ -854,6 +858,7 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
                       <div><small>PERMANENT ADDRESS</small><strong>{student.permanent_address || "Not provided"}</strong></div>
                       <div><small>CITY / STATE</small><strong>{[student.city, student.state].filter(Boolean).join(", ") || "Not provided"}</strong></div>
                       <div><small>PIN CODE</small><strong>{student.pincode || "Not provided"}</strong></div>
+                      <div><small>REGISTERED ON</small><strong>{dateLabel(student.created_at)}</strong></div>
                     </div>
                   </article>
                 ))}
