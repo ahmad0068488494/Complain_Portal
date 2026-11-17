@@ -5,10 +5,22 @@ import { requireAuth, requireAdmin } from "../middleware/auth.js";
 const router = Router();
 router.use(requireAuth, requireAdmin);
 
+async function listAllAuthUsers() {
+  const users = [];
+  for (let page = 1; ; page += 1) {
+    const { data, error } = await supabase.auth.admin.listUsers({ page, perPage: 1000 });
+    if (error) return { users: null, error };
+    const batch = data?.users || [];
+    users.push(...batch);
+    if (batch.length < 1000) break;
+  }
+  return { users, error: null };
+}
+
 router.get("/users", async (_req, res) => {
   const { data: profiles, error: profileError } = await supabase
     .from("profiles")
-    .select("id,full_name,role,phone,crn_number,department,course,semester,academic_session,created_at")
+    .select("id,full_name,role,phone,crn_number,department,course,semester,academic_session,date_of_birth,gender,alternate_phone,alternate_email,current_address,permanent_address,city,state,pincode,created_at")
     .in("role", ["student", "admin"])
     .order("full_name", { ascending: true });
 
@@ -17,13 +29,13 @@ router.get("/users", async (_req, res) => {
     return res.status(500).json({ error: "Could not fetch portal users." });
   }
 
-  const { data: authData, error: authError } = await supabase.auth.admin.listUsers({ page: 1, perPage: 1000 });
+  const { users: authUsers, error: authError } = await listAllAuthUsers();
   if (authError) {
-    console.error("Admin auth directory query failed:", authError);
+    console.error("Admin user directory query failed:", authError);
     return res.status(500).json({ error: "Could not fetch user email addresses." });
   }
 
-  const emailById = new Map((authData.users || []).map((user) => [user.id, user.email || ""]));
+  const emailById = new Map(authUsers.map((user) => [user.id, user.email || ""]));
   const users = (profiles || []).map((person) => ({ ...person, email: emailById.get(person.id) || "" }));
   res.json({
     students: users.filter((person) => person.role === "student"),
@@ -55,12 +67,12 @@ router.get("/complaints", async (_req, res) => {
   }
 
   const profileById = new Map((profiles || []).map((person) => [person.id, person]));
-  const { data: authData, error: authError } = await supabase.auth.admin.listUsers({ page: 1, perPage: 1000 });
+  const { users: authUsers, error: authError } = await listAllAuthUsers();
   if (authError) {
     console.error("Admin complaint email lookup failed:", authError);
     return res.status(500).json({ error: "Could not fetch complaint contact details." });
   }
-  const emailById = new Map((authData.users || []).map((user) => [user.id, user.email || ""]));
+  const emailById = new Map(authUsers.map((user) => [user.id, user.email || ""]));
 
   const complaints = (data || []).map((item) => {
     const student = profileById.get(item.user_id) || {};

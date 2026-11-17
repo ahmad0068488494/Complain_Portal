@@ -1,0 +1,53 @@
+name: Complaint Portal CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  frontend:
+    name: Frontend build and lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Complaint Portal
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: Complaint Portal/package-lock.json
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Run frontend lint
+        run: npm run lint
+      - name: Build frontend
+        run: npm run build
+
+  backend:
+    name: Backend syntax validation
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - name: Install backend dependencies
+        run: npm ci
+      - name: Check backend JavaScript syntax
+        run: find src -type f -name '*.js' -print0 | xargs -0 -n1 node --check

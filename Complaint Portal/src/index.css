@@ -1363,3 +1363,15 @@ h1, h2, h3, h4, h5, h6,
   }
   .admin-directory-tools input { width: 100%; }
 }
+
+
+/* Keep the admin remark editor inside the complaint card without field collisions. */
+.admin-remark-editor { display: grid; gap: 8px; min-width: 0; }
+.admin-remark-editor .status-control { width: 100%; min-width: 0; }
+.admin-remark-editor textarea {
+  display: block; width: 100%; min-width: 0; min-height: 64px; resize: vertical;
+  box-sizing: border-box; padding: 9px 10px; border: 1px solid #d5e0ee;
+  border-radius: 8px; color: #19395f; font: inherit; font-size: 11px;
+}
+.admin-save-remark { justify-self: start; min-height: 36px; padding: 7px 12px; }
+.admin-student-details strong { white-space: normal; overflow-wrap: anywhere; word-break: break-word; }

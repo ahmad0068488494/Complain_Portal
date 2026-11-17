@@ -80,6 +80,7 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
   const [query, setQuery] = useState("");
   const [profileName, setProfileName] = useState(profile?.full_name || "");
   const [remarks, setRemarks] = useState({});
+  const [savingRemarkId, setSavingRemarkId] = useState(null);
   const [demoMode, setDemoMode] = useState(!supabase);
 
   const load = useCallback(async () => {
@@ -188,6 +189,30 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
   }
 
 
+  async function saveRemarks(id) {
+    setError("");
+    setNotice("");
+    const currentComplaint = items.find((item) => item.id === id);
+    if (!currentComplaint) return;
+    setSavingRemarkId(id);
+    try {
+      await apiRequest(`/admin/complaints/${encodeURIComponent(id)}/status`, {
+        session,
+        method: "PATCH",
+        body: {
+          status: currentComplaint.status,
+          admin_remarks: remarks[id] ?? currentComplaint.admin_remarks ?? "",
+        },
+      });
+      await load();
+      setNotice("Administrator remark saved successfully.");
+    } catch (requestError) {
+      setError(requestError.message || "Could not save the administrator remark.");
+    } finally {
+      setSavingRemarkId(null);
+    }
+  }
+
   async function assignComplaint(id, assignedTo) {
     setError("");
     setNotice("");
@@ -227,7 +252,11 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
             " " +
             (x.reference_id || "") +
             " " +
-            (x.student_name || "")
+            (x.student_name || "") +
+            " " +
+            (x.student_email || "") +
+            " " +
+            (x.student_crn || "")
           )
             .toLowerCase()
             .includes(query.toLowerCase()),
@@ -504,7 +533,7 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
               <small>{label}</small>
               <strong>{number}</strong>
               <span className="dashboard-stat-foot">
-                {i === 0 ? "Across the portal view" : "Current status"}
+                {i === 0 ? "Across the portal view" : i === 5 ? "Student profiles" : "Current status"}
               </span>
             </div>
           ))}
@@ -706,6 +735,7 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
                       <small className="admin-complaint-student">
                         <strong>{x.student_name || "Student"}</strong>
                         <span>{x.student_email || "Email unavailable"} · CRN {x.student_crn || "Not provided"}</span>
+                        <span>{x.student_phone || "Contact number unavailable"}</span>
                         <span>{x.student_department || "Department not provided"}{x.student_course ? " · " + x.student_course : ""}{x.student_semester ? " · Semester " + x.student_semester : ""}</span>
                       </small>
                     )}
@@ -720,6 +750,7 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
                     <strong>Reference ID:</strong> {x.reference_id || x.id}
                   </small>
                   <small>Submitted {dateLabel(x.created_at)}</small>
+                {x.assigned_name && <small>Assigned to {x.assigned_name}</small>}
                 </div>
                 {x.admin_remarks && (
                   <div className="dashboard-remark">
@@ -752,19 +783,31 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
                       </select>
                     </label>
                     {!String(x.id).startsWith("DEMO-") && (
-                      <label className="status-control">
-                        Remark for student
-                        <input
-                          value={remarks[x.id] ?? x.admin_remarks ?? ""}
-                          onChange={(e) =>
-                            setRemarks((old) => ({
-                              ...old,
-                              [x.id]: e.target.value,
-                            }))
-                          }
-                          placeholder="Add an update or next step"
-                        />
-                      </label>
+                      <div className="admin-remark-editor">
+                        <label className="status-control">
+                          Remark for student
+                          <textarea
+                            value={remarks[x.id] ?? x.admin_remarks ?? ""}
+                            onChange={(e) =>
+                              setRemarks((old) => ({
+                                ...old,
+                                [x.id]: e.target.value,
+                              }))
+                            }
+                            maxLength={2000}
+                            rows={2}
+                            placeholder="Add an update or next step"
+                          />
+                        </label>
+                        <button
+                          type="button"
+                          className="btn btn-outline admin-save-remark"
+                          disabled={savingRemarkId === x.id}
+                          onClick={() => saveRemarks(x.id)}
+                        >
+                          {savingRemarkId === x.id ? "Saving…" : "Save remark"}
+                        </button>
+                      </div>
                     )}
                   </div>
                 )}
@@ -803,6 +846,14 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
                       <div><small>DEPARTMENT</small><strong>{student.department || "Not provided"}</strong></div>
                       <div><small>COURSE / SEMESTER</small><strong>{student.course || "Not provided"}{student.semester ? " / " + student.semester : ""}</strong></div>
                       <div><small>ACADEMIC SESSION</small><strong>{student.academic_session || "Not assigned"}</strong></div>
+                      <div><small>DATE OF BIRTH</small><strong>{student.date_of_birth || "Not provided"}</strong></div>
+                      <div><small>GENDER</small><strong>{student.gender || "Not provided"}</strong></div>
+                      <div><small>ALTERNATE CONTACT</small><strong>{student.alternate_phone || "Not provided"}</strong></div>
+                      <div><small>ALTERNATE EMAIL</small><strong>{student.alternate_email || "Not provided"}</strong></div>
+                      <div><small>CURRENT ADDRESS</small><strong>{student.current_address || "Not provided"}</strong></div>
+                      <div><small>PERMANENT ADDRESS</small><strong>{student.permanent_address || "Not provided"}</strong></div>
+                      <div><small>CITY / STATE</small><strong>{[student.city, student.state].filter(Boolean).join(", ") || "Not provided"}</strong></div>
+                      <div><small>PIN CODE</small><strong>{student.pincode || "Not provided"}</strong></div>
                     </div>
                   </article>
                 ))}
