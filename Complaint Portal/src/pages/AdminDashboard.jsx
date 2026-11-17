@@ -67,6 +67,8 @@ const dateLabel = (value) =>
 export default function AdminDashboard({ session, profile, onSignOut }) {
   const admin = true;
   const [items, setItems] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [staff, setStaff] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -84,18 +86,31 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
     setError("");
     if (!supabase) {
       setItems(demoComplaints);
+      setStudents([{
+        id: "demo-student", full_name: "Demo Student", email: "student@example.test",
+        phone: "Not provided", crn_number: "DEMO-001", department: "Computer Science",
+        course: "MCA", semester: "1", academic_session: "Demo session",
+      }]);
+      setStaff([{ id: "demo-admin", full_name: "Portal Administrator", email: "admin@example.test" }]);
       setDemoMode(true);
       setLoading(false);
       return;
     }
 
     try {
-      const result = await apiRequest("/admin/complaints", { session });
-      setItems(result.complaints || []);
+      const [complaintResult, directoryResult] = await Promise.all([
+        apiRequest("/admin/complaints", { session }),
+        apiRequest("/admin/users", { session }),
+      ]);
+      setItems(complaintResult.complaints || []);
+      setStudents(directoryResult.students || []);
+      setStaff(directoryResult.staff || []);
       setDemoMode(false);
     } catch (requestError) {
-      setError(requestError.message || "Could not fetch complaints.");
+      setError(requestError.message || "Could not load administration data.");
       setItems([]);
+      setStudents([]);
+      setStaff([]);
     } finally {
       setLoading(false);
     }
@@ -171,6 +186,32 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
     }
   }
 
+
+  async function assignComplaint(id, assignedTo) {
+    setError("");
+    setNotice("");
+    if (demoMode || String(id).startsWith("DEMO-")) {
+      const assignee = staff.find((person) => person.id === assignedTo);
+      setItems((old) => old.map((item) => item.id === id
+        ? { ...item, assigned_to: assignedTo || null, assigned_name: assignee?.full_name || null }
+        : item));
+      setNotice("Demo assignment updated locally only.");
+      return;
+    }
+
+    try {
+      await apiRequest(`/admin/complaints/${encodeURIComponent(id)}/assignment`, {
+        session,
+        method: "PATCH",
+        body: { assigned_to: assignedTo || null },
+      });
+      setNotice(assignedTo ? "Complaint assigned successfully." : "Complaint assignment removed.");
+      await load();
+    } catch (requestError) {
+      setError(requestError.message || "Could not assign this complaint.");
+    }
+  }
+
   const visibleItems = useMemo(
     () =>
       items.filter(
@@ -208,11 +249,13 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
     ["Pending", counts.pending || 0, "clock"],
     ["In progress", counts.in_progress || 0, "activity"],
     ["Resolved", counts.resolved || 0, "check-circle"],
+    ["Rejected", counts.rejected || 0, "x-circle"],
+    ["Registered students", students.length, "users"],
   ];
 
   return (
     <section
-      className={"dashboard-wrap " + (!admin ? "student-dashboard-shell" : "")}
+      className={"dashboard-wrap " + (!admin ? "student-dashboard-shell" : "admin-dashboard-shell")}
     >
       {!admin && (
         <aside className="student-sidebar">
@@ -271,7 +314,24 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
           </div>
         </aside>
       )}
-      <div className="student-main-content" id="student-dashboard-content">
+      {admin && (
+        <aside className="admin-sidebar">
+          <div className="admin-sidebar-brand">
+            <span className="admin-sidebar-mark">C</span>
+            <div><strong>COMPLAINT</strong><small>ADMINISTRATION</small></div>
+          </div>
+          <div className="admin-sidebar-label">WORKSPACE</div>
+          <button className="active" onClick={() => document.getElementById("student-dashboard-content")?.scrollIntoView({ behavior: "smooth" })}><span>▦</span>Overview</button>
+          <button onClick={() => document.getElementById("complaint-management")?.scrollIntoView({ behavior: "smooth" })}><span>▤</span>Complaints</button>
+          <button onClick={() => document.getElementById("admin-assignment-queue")?.scrollIntoView({ behavior: "smooth" })}><span>⇄</span>Assignments</button>
+          <button onClick={() => document.getElementById("admin-analytics")?.scrollIntoView({ behavior: "smooth" })}><span>▥</span>Analytics</button>
+          <button onClick={() => document.getElementById("admin-students")?.scrollIntoView({ behavior: "smooth" })}><span>♙</span>Students</button>
+          <button onClick={() => document.getElementById("admin-profile")?.scrollIntoView({ behavior: "smooth" })}><span>◎</span>Profile</button>
+          <button className="admin-sidebar-logout" onClick={onSignOut}><span>↪</span>Sign out</button>
+          <div className="admin-sidebar-footer">Campus Grievance System<small>Administration workspace</small></div>
+        </aside>
+      )}
+      <div className={admin ? "admin-main-content" : "student-main-content"} id="student-dashboard-content">
         <div
           className={
             "dashboard-top " + (!admin ? "student-dashboard-title-hidden" : "")
@@ -314,6 +374,17 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
             )}
           </div>
         </div>
+        {admin && (
+          <section className="admin-profile-card" id="admin-profile">
+            <div className="admin-profile-avatar">{(profile?.full_name || "A").slice(0, 1).toUpperCase()}</div>
+            <div className="admin-profile-copy">
+              <span className="eyebrow">ADMINISTRATOR PROFILE</span>
+              <h2>{profile?.full_name || "Portal Administrator"}</h2>
+              <p>{session?.user?.email || "Administrator account"}</p>
+            </div>
+            <span className="admin-profile-role">Verified admin access</span>
+          </section>
+        )}
         {demoMode && (
           <div className="dashboard-demo-note">
             <strong>Preview / demo data</strong>
@@ -407,13 +478,11 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
           {stats.map(([label, number, icon], i) => (
             <div className="dashboard-stat-card" key={label}>
               <span className={"dashboard-stat-icon stat-icon-" + i}>
-                {icon === "layers"
-                  ? "▤"
-                  : icon === "clock"
-                    ? "◷"
-                    : icon === "activity"
-                      ? "↗"
-                      : "✓"}
+                {icon === "layers" ? "▤"
+                  : icon === "clock" ? "◷"
+                    : icon === "activity" ? "↗"
+                      : icon === "check-circle" ? "✓"
+                        : icon === "x-circle" ? "×" : "♙"}
               </span>
               <small>{label}</small>
               <strong>{number}</strong>
@@ -502,7 +571,7 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
           </>
         ) : (
           <>
-            <div className="dashboard-admin-grid">
+            <div className="dashboard-admin-grid" id="admin-analytics">
               <section className="dashboard-panel">
                 <div className="dashboard-panel-title">
                   <div>
@@ -580,7 +649,7 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
             </div>
           </>
         )}
-        <div className="dashboard-toolbar">
+        <div className="dashboard-toolbar" id={admin ? "admin-assignment-queue" : undefined}>
           <input
             aria-label="Search complaints"
             placeholder={
@@ -617,8 +686,10 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
                     <span className="complaint-category">{x.category}</span>
                     <h3>{x.title}</h3>
                     {admin && (
-                      <small>
-                        Submitted by {x.student_name || x.user_id || "Student"}
+                      <small className="admin-complaint-student">
+                        <strong>{x.student_name || "Student"}</strong>
+                        <span>{x.student_email || "Email unavailable"} · CRN {x.student_crn || "Not provided"}</span>
+                        <span>{x.student_department || "Department not provided"}{x.student_course ? " · " + x.student_course : ""}{x.student_semester ? " · Semester " + x.student_semester : ""}</span>
                       </small>
                     )}
                   </div>
@@ -654,6 +725,15 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
                         ))}
                       </select>
                     </label>
+                    <label className="status-control">
+                      Assign to administrator
+                      <select value={x.assigned_to || ""} onChange={(e) => assignComplaint(x.id, e.target.value)}>
+                        <option value="">Unassigned</option>
+                        {staff.map((person) => (
+                          <option key={person.id} value={person.id}>{person.full_name || person.email || "Administrator"}</option>
+                        ))}
+                      </select>
+                    </label>
                     {!String(x.id).startsWith("DEMO-") && (
                       <label className="status-control">
                         Remark for student
@@ -674,6 +754,35 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
               </article>
             ))}
           </div>
+        )}
+        {admin && (
+          <section className="dashboard-panel admin-students-panel" id="admin-students">
+            <div className="dashboard-panel-title">
+              <div><span className="eyebrow">USER MANAGEMENT</span><h2>Registered students</h2><p>Student identity and academic information from the portal profiles.</p></div>
+              <span className="admin-directory-count">{students.length} students</span>
+            </div>
+            {students.length ? (
+              <div className="admin-student-grid">
+                {students.map((student) => (
+                  <article className="admin-student-card" key={student.id}>
+                    <div className="admin-student-card-head">
+                      <span className="admin-student-avatar">{(student.full_name || "S").slice(0, 1).toUpperCase()}</span>
+                      <div><strong>{student.full_name || "Student"}</strong><small>{student.email || "Email unavailable"}</small></div>
+                    </div>
+                    <div className="admin-student-details">
+                      <div><small>CRN NUMBER</small><strong>{student.crn_number || "Not provided"}</strong></div>
+                      <div><small>CONTACT</small><strong>{student.phone || "Not provided"}</strong></div>
+                      <div><small>DEPARTMENT</small><strong>{student.department || "Not provided"}</strong></div>
+                      <div><small>COURSE / SEMESTER</small><strong>{student.course || "Not provided"}{student.semester ? " / " + student.semester : ""}</strong></div>
+                      <div><small>ACADEMIC SESSION</small><strong>{student.academic_session || "Not assigned"}</strong></div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <p className="dashboard-empty">No registered student profiles were found.</p>
+            )}
+          </section>
         )}
       </div>
     </section>
