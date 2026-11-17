@@ -1044,16 +1044,41 @@ h1, h2, h3, h4, h5, h6,
 @media(max-width:600px){.student-main-content .student-info-card{grid-template-columns:44px minmax(0,1fr);padding:17px;gap:12px}.student-info-card .dashboard-avatar{width:42px;height:42px;font-size:18px}.student-info-content h2{font-size:20px;margin-bottom:14px}.student-info-grid{grid-template-columns:1fr;gap:9px}.student-info-grid>div{padding:10px 12px}}
 
 
-/* Student dashboard: keep the navigation visible while the page scrolls. */
-@media (min-width: 761px) {
+/* Student dashboard sidebar: sticky at every viewport size.
+   The top offset keeps it below the sticky site header. */
+.student-sidebar {
+  position: sticky;
+  top: 72px;
+  align-self: start;
+  height: calc(100vh - 72px);
+  height: calc(100dvh - 72px);
+  min-height: calc(100vh - 72px);
+  min-height: calc(100dvh - 72px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  z-index: 4;
+}
+
+/* Tablet header wraps onto a second row. */
+@media (min-width: 761px) and (max-width: 900px) {
   .student-sidebar {
-    position: sticky;
-    top: 0;
-    align-self: start;
-    height: 100vh;
-    min-height: 100vh;
-    overflow-y: auto;
-    overscroll-behavior: contain;
+    top: 112px;
+    height: calc(100vh - 112px);
+    height: calc(100dvh - 112px);
+    min-height: calc(100vh - 112px);
+    min-height: calc(100dvh - 112px);
+  }
+}
+
+/* Compact header has brand/actions and navigation on separate rows. */
+@media (max-width: 760px) {
+  .student-sidebar {
+    top: 120px;
+    height: calc(100vh - 120px);
+    height: calc(100dvh - 120px);
+    min-height: calc(100vh - 120px);
+    min-height: calc(100dvh - 120px);
   }
 }
 
@@ -1061,13 +1086,4 @@ h1, h2, h3, h4, h5, h6,
 .student-main-content .stat-icon-4 {
   background: #ffebeb;
   color: #b42332;
-}
-
-@media (max-width: 760px) {
-  .student-sidebar {
-    position: static;
-    height: auto;
-    min-height: auto;
-    overflow: visible;
-  }
 }

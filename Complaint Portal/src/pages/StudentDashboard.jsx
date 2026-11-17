@@ -279,13 +279,6 @@ export default function StudentDashboard({ session, profile, onSignOut }) {
     >
       {!admin && (
         <aside className="student-sidebar">
-          <div className="student-sidebar-brand">
-            <span className="student-brand-mark">C</span>
-            <div>
-              <strong>COMPLAINT</strong>
-              <small>STUDENT PORTAL</small>
-            </div>
-          </div>
           <div className="student-sidebar-label">MENU</div>
           <button
             className="active"
