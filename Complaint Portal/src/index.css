@@ -1411,3 +1411,14 @@ h1, h2, h3, h4, h5, h6,
   .admin-student-card-trigger { padding: 12px; }
   .admin-student-details { margin: 0 12px; gap: 12px 10px; }
 }
+
+
+/* An expanded student profile occupies a complete directory row.
+   This prevents sibling cards from stretching to the expanded card's height. */
+.admin-student-card.is-expanded {
+  grid-column: 1 / -1;
+}
+.admin-student-grid {
+  grid-auto-flow: row;
+  align-items: start;
+}
