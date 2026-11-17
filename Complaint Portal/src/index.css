@@ -1179,3 +1179,56 @@ h1, h2, h3, h4, h5, h6,
   .student-profile-actions { flex-direction: column-reverse; }
   .student-profile-actions .btn { width: 100%; }
 }
+
+
+/* Registration form spacing: keep paired field rows visually separate. */
+.auth-form > .two-fields {
+  align-items: start;
+  column-gap: 14px;
+  row-gap: 16px;
+  margin: 16px 0;
+}
+
+.auth-form > .two-fields > label {
+  display: grid;
+  align-content: start;
+  align-self: start;
+  min-width: 0;
+  gap: 8px;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.auth-form > .two-fields input,
+.auth-form > .two-fields select {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 46px;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.auth-form > .two-fields + .two-fields {
+  margin-top: 18px;
+}
+
+.auth-form > label {
+  line-height: 1.4;
+}
+
+.password-input {
+  align-items: center;
+  min-width: 0;
+}
+
+.password-input input {
+  min-width: 0;
+}
+
+@media (max-width: 520px) {
+  .auth-form > .two-fields {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 14px;
+  }
+}
