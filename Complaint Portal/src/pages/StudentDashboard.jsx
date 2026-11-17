@@ -136,43 +136,42 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
     if (!supabase || !session?.user?.id) return;
     setProfileLoading(true);
     setProfileError("");
-    const { data, error: loadError } = await supabase
-      .from("profiles")
-      .select("full_name,phone,crn_number,department,course,semester,academic_session,date_of_birth,gender,alternate_phone,alternate_email,current_address,permanent_address,city,state,pincode,avatar_url")
-      .eq("id", session.user.id)
-      .maybeSingle();
+    try {
+      const { data, error: loadError } = await supabase
+        .from("profiles")
+        .select("full_name,phone,crn_number,department,course,semester,academic_session,date_of_birth,gender,alternate_phone,alternate_email,current_address,permanent_address,city,state,pincode,avatar_url")
+        .eq("id", session.user.id)
+        .maybeSingle();
+      if (loadError) throw loadError;
+      if (!data) {
+        throw new Error("Your student profile was not found. Please contact the portal administrator.");
+      }
 
-    if (loadError) {
+      setStudentProfile(data);
+      setProfileName(data.full_name || "");
+      setProfileForm({
+        full_name: data.full_name || "", phone: data.phone || "",
+        date_of_birth: data.date_of_birth || "", gender: data.gender || "",
+        alternate_phone: data.alternate_phone || "", alternate_email: data.alternate_email || "",
+        current_address: data.current_address || "", permanent_address: data.permanent_address || "",
+        city: data.city || "", state: data.state || "", pincode: data.pincode || "",
+        avatar_url: data.avatar_url || "",
+      });
+
+      if (data.avatar_url) {
+        const { data: signed, error: signedError } = await supabase.storage
+          .from("student-avatars")
+          .createSignedUrl(data.avatar_url, 3600);
+        if (signedError) throw signedError;
+        setProfileAvatarUrl(signed.signedUrl);
+      } else {
+        setProfileAvatarUrl("");
+      }
+    } catch (loadError) {
       setProfileError(loadError.message || "Could not load your profile.");
+    } finally {
       setProfileLoading(false);
-      return;
     }
-    if (!data) {
-      setProfileError("Your student profile was not found. Please contact the portal administrator.");
-      setProfileLoading(false);
-      return;
-    }
-
-    setStudentProfile(data);
-    setProfileName(data.full_name || "");
-    setProfileForm({
-      full_name: data.full_name || "", phone: data.phone || "",
-      date_of_birth: data.date_of_birth || "", gender: data.gender || "",
-      alternate_phone: data.alternate_phone || "", alternate_email: data.alternate_email || "",
-      current_address: data.current_address || "", permanent_address: data.permanent_address || "",
-      city: data.city || "", state: data.state || "", pincode: data.pincode || "",
-      avatar_url: data.avatar_url || "",
-    });
-
-    if (data.avatar_url) {
-      const { data: signed, error: signedError } = await supabase.storage
-        .from("student-avatars")
-        .createSignedUrl(data.avatar_url, 3600);
-      if (!signedError) setProfileAvatarUrl(signed.signedUrl);
-    } else {
-      setProfileAvatarUrl("");
-    }
-    setProfileLoading(false);
   }, [session?.user?.id]);
 
   useEffect(() => {
