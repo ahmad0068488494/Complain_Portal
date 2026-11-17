@@ -218,12 +218,12 @@ export default function AuthPage({ mode, onAuthenticated }) {
                   <option value="" disabled>
                     Select department
                   </option>
-                  <option>Computer Science</option>
-                  <option>Management</option>
-                  <option>Engineering</option>
-                  <option>Science</option>
-                  <option>Commerce</option>
-                  <option>Arts</option>
+                  <option>B.TECH CSE</option>
+                  <option>B.TECH AI & ML</option>
+                  <option>MCA</option>
+                  <option>MBA</option>
+                  <option>BCA</option>
+                  <option>BBA</option>
                   <option>Other</option>
                 </select>
               </label>
@@ -235,16 +235,20 @@ export default function AuthPage({ mode, onAuthenticated }) {
                 Course / Program
                 <select value={course} onChange={(e) => setCourse(e.target.value)} required>
                   <option value="" disabled>Select course / program</option>
-                  <option>BCA</option><option>MCA</option><option>BBA</option>
-                  <option>MBA</option><option>B.Tech</option><option>M.Tech</option>
-                  <option>BA</option><option>B.Sc</option><option>B.Com</option><option>Other</option>
+                  <option>B.TECH CSE</option>
+                  <option>B.TECH AI & ML</option>
+                  <option>MCA</option>
+                  <option>MBA</option>
+                  <option>BCA</option>
+                  <option>BBA</option>
+                  <option>Other</option>
                 </select>
               </label>
               <label>
                 Semester
                 <select value={semester} onChange={(e) => setSemester(e.target.value)} required>
                   <option value="" disabled>Select semester</option>
-                  {Array.from({ length: 12 }, (_, index) => (
+                  {Array.from({ length: 8 }, (_, index) => (
                     <option key={index + 1} value={String(index + 1)}>
                       Semester {index + 1}
                     </option>
