@@ -40,7 +40,7 @@ async function sendRequest(path, method, body, token) {
   });
 }
 
-export async function apiRequest(path, { session: _session, method = "GET", body } = {}) {
+export async function apiRequest(path, { method = "GET", body } = {}) {
   let response;
 
   try {
