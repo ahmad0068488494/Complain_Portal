@@ -1385,3 +1385,29 @@ h1, h2, h3, h4, h5, h6,
   object-fit: cover;
   border: 1px solid #dce6f2;
 }
+
+
+/* Compact, keyboard-accessible student directory accordion cards. */
+.admin-student-card { padding: 0; overflow: hidden; transition: border-color .18s ease, box-shadow .18s ease; }
+.admin-student-card.is-expanded { border-color: #bfd2e9; box-shadow: 0 5px 18px #123b650d; }
+.admin-student-card-trigger {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  width: 100%; min-width: 0; padding: 14px 15px; border: 0; background: transparent;
+  color: inherit; text-align: left; cursor: pointer; font: inherit;
+}
+.admin-student-card-trigger:hover { background: #f4f8fd; }
+.admin-student-card-trigger:focus-visible { outline: 3px solid #8bb9ee; outline-offset: -3px; }
+.admin-student-card-trigger .admin-student-card-head { flex: 1; min-width: 0; padding: 0; border: 0; }
+.admin-student-card-identity { display: grid; gap: 3px; min-width: 0; }
+.admin-student-expand-indicator {
+  display: grid; place-items: center; width: 27px; height: 27px; flex: 0 0 27px;
+  border: 1px solid #dbe6f2; border-radius: 50%; background: #fff; color: #174b83;
+  font-size: 19px; line-height: 1;
+}
+.admin-student-details {
+  margin: 0 15px; padding: 13px 0 15px; border-top: 1px solid #e8eef6;
+}
+@media (max-width: 520px) {
+  .admin-student-card-trigger { padding: 12px; }
+  .admin-student-details { margin: 0 12px; gap: 12px 10px; }
+}
