@@ -75,7 +75,7 @@ const dateLabel = (value) =>
       })
     : "—";
 
-export default function StudentDashboard({ session, profile, onSignOut }) {
+export default function StudentDashboard({ session, profile, onSignOut, onProfileUpdated }) {
   const admin = false;
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -94,6 +94,19 @@ export default function StudentDashboard({ session, profile, onSignOut }) {
   const [filter, setFilter] = useState("all");
   const [query, setQuery] = useState("");
   const [profileName, setProfileName] = useState(profile?.full_name || "");
+  const [studentProfile, setStudentProfile] = useState(null);
+  const [profileForm, setProfileForm] = useState({
+    full_name: profile?.full_name || "", phone: "", date_of_birth: "", gender: "",
+    alternate_phone: "", alternate_email: "", current_address: "",
+    permanent_address: "", city: "", state: "", pincode: "", avatar_url: "",
+  });
+  const [profileAvatarUrl, setProfileAvatarUrl] = useState("");
+  const [profileEditing, setProfileEditing] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [profileError, setProfileError] = useState("");
+  const [profileNotice, setProfileNotice] = useState("");
   const [remarks, setRemarks] = useState({});
   const [demoMode, setDemoMode] = useState(!supabase);
 
@@ -119,9 +132,56 @@ export default function StudentDashboard({ session, profile, onSignOut }) {
     }
   }, [session]);
 
+  const loadStudentProfile = useCallback(async () => {
+    if (!supabase || !session?.user?.id) return;
+    setProfileLoading(true);
+    setProfileError("");
+    const { data, error: loadError } = await supabase
+      .from("profiles")
+      .select("full_name,phone,crn_number,department,course,semester,academic_session,date_of_birth,gender,alternate_phone,alternate_email,current_address,permanent_address,city,state,pincode,avatar_url")
+      .eq("id", session.user.id)
+      .maybeSingle();
+
+    if (loadError) {
+      setProfileError(loadError.message || "Could not load your profile.");
+      setProfileLoading(false);
+      return;
+    }
+    if (!data) {
+      setProfileError("Your student profile was not found. Please contact the portal administrator.");
+      setProfileLoading(false);
+      return;
+    }
+
+    setStudentProfile(data);
+    setProfileName(data.full_name || "");
+    setProfileForm({
+      full_name: data.full_name || "", phone: data.phone || "",
+      date_of_birth: data.date_of_birth || "", gender: data.gender || "",
+      alternate_phone: data.alternate_phone || "", alternate_email: data.alternate_email || "",
+      current_address: data.current_address || "", permanent_address: data.permanent_address || "",
+      city: data.city || "", state: data.state || "", pincode: data.pincode || "",
+      avatar_url: data.avatar_url || "",
+    });
+
+    if (data.avatar_url) {
+      const { data: signed, error: signedError } = await supabase.storage
+        .from("student-avatars")
+        .createSignedUrl(data.avatar_url, 3600);
+      if (!signedError) setProfileAvatarUrl(signed.signedUrl);
+    } else {
+      setProfileAvatarUrl("");
+    }
+    setProfileLoading(false);
+  }, [session?.user?.id]);
+
   useEffect(() => {
     load();
   }, [load]);
+
+  useEffect(() => {
+    loadStudentProfile();
+  }, [loadStudentProfile]);
 
   useEffect(() => {
     if (!supabase || !session?.user?.id) return undefined;
@@ -155,6 +215,130 @@ export default function StudentDashboard({ session, profile, onSignOut }) {
       });
     }
   }, []);
+
+  async function saveStudentProfile(e) {
+    e.preventDefault();
+    setProfileError("");
+    setProfileNotice("");
+    const fullName = profileForm.full_name.trim();
+    const phoneValue = profileForm.phone.trim();
+    const alternatePhone = profileForm.alternate_phone.trim();
+    const pincode = profileForm.pincode.trim();
+
+    if (fullName.length < 2 || fullName.length > 120) {
+      setProfileError("Full name must be between 2 and 120 characters.");
+      return;
+    }
+    if (!/^[0-9+() -]{7,20}$/.test(phoneValue)) {
+      setProfileError("Enter a valid contact number (7–20 characters).");
+      return;
+    }
+    if (alternatePhone && !/^[0-9+() -]{7,20}$/.test(alternatePhone)) {
+      setProfileError("Enter a valid alternate contact number.");
+      return;
+    }
+    if (pincode && !/^\d{4,10}$/.test(pincode)) {
+      setProfileError("PIN code must contain 4–10 digits.");
+      return;
+    }
+
+    setProfileSaving(true);
+    const update = {
+      full_name: fullName, phone: phoneValue,
+      date_of_birth: profileForm.date_of_birth || null,
+      gender: profileForm.gender || null,
+      alternate_phone: alternatePhone || null,
+      alternate_email: profileForm.alternate_email.trim() || null,
+      current_address: profileForm.current_address.trim() || null,
+      permanent_address: profileForm.permanent_address.trim() || null,
+      city: profileForm.city.trim() || null,
+      state: profileForm.state.trim() || null,
+      pincode: pincode || null,
+      avatar_url: profileForm.avatar_url || null,
+    };
+
+    try {
+      const { data, error: updateError } = await supabase
+        .from("profiles")
+        .update(update)
+        .eq("id", session.user.id)
+        .select("full_name,phone,crn_number,department,course,semester,academic_session,date_of_birth,gender,alternate_phone,alternate_email,current_address,permanent_address,city,state,pincode,avatar_url")
+        .single();
+      if (updateError) throw updateError;
+      setStudentProfile(data);
+      setProfileName(data.full_name || "");
+      onProfileUpdated?.({ full_name: data.full_name });
+      setProfileEditing(false);
+      setProfileNotice("Your profile has been updated successfully.");
+      if (data.avatar_url) {
+        const { data: signed } = await supabase.storage
+          .from("student-avatars")
+          .createSignedUrl(data.avatar_url, 3600);
+        setProfileAvatarUrl(signed?.signedUrl || "");
+      }
+    } catch (saveError) {
+      setProfileError(saveError.message || "Could not update your profile. Please try again.");
+    } finally {
+      setProfileSaving(false);
+    }
+  }
+
+  async function uploadStudentAvatar(event) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      setProfileError("Choose a JPG, PNG or WebP image.");
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      setProfileError("Profile photo must be 2 MB or smaller.");
+      return;
+    }
+    setAvatarUploading(true);
+    setProfileError("");
+    const extension = file.type === "image/jpeg" ? "jpg" : file.type.split("/")[1];
+    const path = session.user.id + "/" + crypto.randomUUID() + "." + extension;
+    try {
+      const { error: uploadError } = await supabase.storage
+        .from("student-avatars")
+        .upload(path, file, { cacheControl: "3600", contentType: file.type, upsert: false });
+      if (uploadError) throw uploadError;
+      const { data: signed, error: signedError } = await supabase.storage
+        .from("student-avatars")
+        .createSignedUrl(path, 3600);
+      if (signedError) throw signedError;
+      setProfileForm((old) => ({ ...old, avatar_url: path }));
+      setProfileAvatarUrl(signed.signedUrl);
+      setProfileNotice("Photo uploaded. Save your profile to keep this change.");
+    } catch (uploadError) {
+      setProfileError(uploadError.message || "Could not upload profile photo.");
+    } finally {
+      setAvatarUploading(false);
+    }
+  }
+
+  function cancelProfileEdit() {
+    setProfileEditing(false);
+    setProfileError("");
+    setProfileNotice("");
+    if (!studentProfile) return;
+    setProfileForm({
+      full_name: studentProfile.full_name || "", phone: studentProfile.phone || "",
+      date_of_birth: studentProfile.date_of_birth || "", gender: studentProfile.gender || "",
+      alternate_phone: studentProfile.alternate_phone || "", alternate_email: studentProfile.alternate_email || "",
+      current_address: studentProfile.current_address || "", permanent_address: studentProfile.permanent_address || "",
+      city: studentProfile.city || "", state: studentProfile.state || "", pincode: studentProfile.pincode || "",
+      avatar_url: studentProfile.avatar_url || "",
+    });
+    if (studentProfile.avatar_url) {
+      supabase.storage.from("student-avatars")
+        .createSignedUrl(studentProfile.avatar_url, 3600)
+        .then(({ data }) => setProfileAvatarUrl(data?.signedUrl || ""));
+    } else {
+      setProfileAvatarUrl("");
+    }
+  }
 
   async function create(e) {
     e.preventDefault();
@@ -413,49 +597,133 @@ export default function StudentDashboard({ session, profile, onSignOut }) {
             id="student-profile"
             className="dashboard-profile-card student-info-card"
           >
-            <span className="dashboard-avatar">
-              {(
-                profile?.full_name ||
-                session?.user?.user_metadata?.full_name ||
-                session?.user?.email ||
-                "S"
-              )
-                .slice(0, 1)
-                .toUpperCase()}
-            </span>
+            {profileAvatarUrl ? (
+              <img className="student-profile-avatar" src={profileAvatarUrl} alt="Student profile" />
+            ) : (
+              <span className="dashboard-avatar">
+                {(studentProfile?.full_name || profile?.full_name || "S").slice(0, 1).toUpperCase()}
+              </span>
+            )}
             <div className="student-info-content">
-              <span className="eyebrow">STUDENT INFORMATION</span>
-              <h2>
-                {profile?.full_name ||
-                  session?.user?.user_metadata?.full_name ||
-                  "Student"}
-              </h2>
-              <div className="student-info-grid">
+              <div className="student-profile-title-row">
                 <div>
-                  <small>EMAIL ADDRESS</small>
-                  <strong>{session?.user?.email || "—"}</strong>
+                  <span className="eyebrow">STUDENT INFORMATION</span>
+                  <h2>{studentProfile?.full_name || profile?.full_name || "Student"}</h2>
+                  <p className="student-profile-subtitle">Manage your personal and contact details</p>
                 </div>
-                <div>
-                  <small>CONTACT NUMBER</small>
-                  <strong>
-                    {session?.user?.user_metadata?.phone ||
-                      "Not provided at registration"}
-                  </strong>
-                </div>
-                <div>
-                  <small>DEPARTMENT</small>
-                  <strong>
-                    {session?.user?.user_metadata?.department || "Not provided"}
-                  </strong>
-                </div>
-                <div>
-                  <small>CRN NUMBER</small>
-                  <strong>
-                    {session?.user?.user_metadata?.crn_number ||
-                      "Not provided"}
-                  </strong>
-                </div>
+                <button type="button" className="btn btn-outline"
+                  disabled={profileLoading || !studentProfile}
+                  onClick={() => {
+                    setProfileError("");
+                    setProfileNotice("");
+                    setProfileEditing((editing) => !editing);
+                  }}>
+                  {profileEditing ? "Close editor" : "Edit Profile"}
+                </button>
               </div>
+              {profileLoading && <p className="profile-feedback">Loading profile details…</p>}
+              {profileError && <p className="error profile-feedback" role="alert">{profileError}</p>}
+              {profileNotice && <p className="info profile-feedback" role="status">{profileNotice}</p>}
+
+              <div className="student-info-grid">
+                <div><small>EMAIL ADDRESS</small><strong>{session?.user?.email || "—"}</strong></div>
+                <div><small>CONTACT NUMBER</small><strong>{studentProfile?.phone || "Not provided"}</strong></div>
+                <div><small>DEPARTMENT</small><strong>{studentProfile?.department || "Not provided"}</strong></div>
+                <div><small>CRN NUMBER</small><strong>{studentProfile?.crn_number || "Not provided"}</strong></div>
+                <div><small>COURSE / PROGRAM</small><strong>{studentProfile?.course || "Not provided"}</strong></div>
+                <div><small>SEMESTER</small><strong>{studentProfile?.semester ? "Semester " + studentProfile.semester : "Not provided"}</strong></div>
+                <div><small>ACADEMIC SESSION</small><strong>{studentProfile?.academic_session || "Managed by administration"}</strong></div>
+              </div>
+
+              {profileEditing && (
+                <form className="student-profile-form" onSubmit={saveStudentProfile}>
+                  <div className="student-profile-form-heading">
+                    <span className="eyebrow">PERSONAL & CONTACT DETAILS</span>
+                    <p>Update your personal and contact details. Academic identity fields are protected and managed by the administration.</p>
+                  </div>
+                  <div className="student-profile-form-grid">
+                    <label>Full name
+                      <input value={profileForm.full_name}
+                        onChange={(e) => setProfileForm((old) => ({ ...old, full_name: e.target.value }))}
+                        minLength={2} maxLength={120} autoComplete="name" required />
+                    </label>
+                    <label>Primary contact number
+                      <input type="tel" value={profileForm.phone}
+                        onChange={(e) => setProfileForm((old) => ({ ...old, phone: e.target.value }))}
+                        pattern="[0-9+() -]{7,20}" autoComplete="tel" required />
+                    </label>
+                    <label>Date of birth
+                      <input type="date" value={profileForm.date_of_birth}
+                        max={new Date().toISOString().slice(0, 10)}
+                        onChange={(e) => setProfileForm((old) => ({ ...old, date_of_birth: e.target.value }))} />
+                    </label>
+                    <label>Gender
+                      <select value={profileForm.gender}
+                        onChange={(e) => setProfileForm((old) => ({ ...old, gender: e.target.value }))}>
+                        <option value="">Prefer not to say</option>
+                        <option value="female">Female</option>
+                        <option value="male">Male</option>
+                        <option value="non_binary">Non-binary</option>
+                      </select>
+                    </label>
+                    <label>Alternate contact number
+                      <input type="tel" value={profileForm.alternate_phone}
+                        onChange={(e) => setProfileForm((old) => ({ ...old, alternate_phone: e.target.value }))}
+                        pattern="[0-9+() -]{7,20}" />
+                    </label>
+                    <label>Alternate email
+                      <input type="email" value={profileForm.alternate_email}
+                        onChange={(e) => setProfileForm((old) => ({ ...old, alternate_email: e.target.value }))} />
+                    </label>
+                    <label className="profile-form-wide">Current address
+                      <textarea rows={2} value={profileForm.current_address}
+                        onChange={(e) => setProfileForm((old) => ({ ...old, current_address: e.target.value }))}
+                        maxLength={500} />
+                    </label>
+                    <label className="profile-form-wide">Permanent address
+                      <textarea rows={2} value={profileForm.permanent_address}
+                        onChange={(e) => setProfileForm((old) => ({ ...old, permanent_address: e.target.value }))}
+                        maxLength={500} />
+                    </label>
+                    <label>City
+                      <input value={profileForm.city}
+                        onChange={(e) => setProfileForm((old) => ({ ...old, city: e.target.value }))}
+                        maxLength={100} />
+                    </label>
+                    <label>State
+                      <input value={profileForm.state}
+                        onChange={(e) => setProfileForm((old) => ({ ...old, state: e.target.value }))}
+                        maxLength={100} />
+                    </label>
+                    <label>PIN code
+                      <input inputMode="numeric" value={profileForm.pincode}
+                        onChange={(e) => setProfileForm((old) => ({ ...old, pincode: e.target.value }))}
+                        pattern="[0-9]{4,10}" maxLength={10} />
+                    </label>
+                    <label className="profile-form-wide">Profile photo (JPG, PNG or WebP · maximum 2 MB)
+                      <input type="file" accept="image/jpeg,image/png,image/webp"
+                        onChange={uploadStudentAvatar} disabled={avatarUploading} />
+                      {avatarUploading && <small>Uploading photo…</small>}
+                    </label>
+                  </div>
+                  <div className="student-profile-readonly">
+                    <strong>Academic information · Admin managed</strong>
+                    <span>CRN: {studentProfile?.crn_number || "Not provided"}</span>
+                    <span>Department: {studentProfile?.department || "Not provided"}</span>
+                    <span>Course: {studentProfile?.course || "Not provided"}</span>
+                    <span>Semester: {studentProfile?.semester || "Not provided"}</span>
+                    <span>Academic session: {studentProfile?.academic_session || "Not assigned"}</span>
+                  </div>
+                  <div className="student-profile-actions">
+                    <button type="button" className="btn btn-outline" onClick={cancelProfileEdit}
+                      disabled={profileSaving || avatarUploading}>Cancel</button>
+                    <button type="submit" className="btn btn-primary"
+                      disabled={profileSaving || avatarUploading || profileLoading}>
+                      {profileSaving ? "Saving…" : "Save Changes"}
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
           </section>
         )}

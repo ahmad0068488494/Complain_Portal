@@ -12,6 +12,8 @@ export default function AuthPage({ mode, onAuthenticated }) {
   const [phone, setPhone] = useState("");
   const [regNo, setRegNo] = useState("");
   const [department, setDepartment] = useState("");
+  const [course, setCourse] = useState("");
+  const [semester, setSemester] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   async function submit(e) {
@@ -28,6 +30,18 @@ export default function AuthPage({ mode, onAuthenticated }) {
       setError("Passwords do not match.");
       return;
     }
+    if (register && !/^[0-9+() -]{7,20}$/.test(phone.trim())) {
+      setError("Enter a valid contact number (7–20 characters).");
+      return;
+    }
+    if (register && (regNo.trim().length < 2 || regNo.trim().length > 40)) {
+      setError("CRN Number must be between 2 and 40 characters.");
+      return;
+    }
+    if (register && (!department || !course || !semester)) {
+      setError("Select your department, course and semester.");
+      return;
+    }
     setBusy(true);
     try {
       if (register) {
@@ -40,6 +54,8 @@ export default function AuthPage({ mode, onAuthenticated }) {
               phone: phone.trim(),
               crn_number: regNo.trim(),
               department,
+              course,
+              semester,
             },
           },
         });
@@ -205,7 +221,34 @@ export default function AuthPage({ mode, onAuthenticated }) {
                   <option>Computer Science</option>
                   <option>Management</option>
                   <option>Engineering</option>
+                  <option>Science</option>
+                  <option>Commerce</option>
+                  <option>Arts</option>
                   <option>Other</option>
+                </select>
+              </label>
+            </div>
+          )}
+          {register && (
+            <div className="two-fields">
+              <label>
+                Course / Program
+                <select value={course} onChange={(e) => setCourse(e.target.value)} required>
+                  <option value="" disabled>Select course / program</option>
+                  <option>BCA</option><option>MCA</option><option>BBA</option>
+                  <option>MBA</option><option>B.Tech</option><option>M.Tech</option>
+                  <option>BA</option><option>B.Sc</option><option>B.Com</option><option>Other</option>
+                </select>
+              </label>
+              <label>
+                Semester
+                <select value={semester} onChange={(e) => setSemester(e.target.value)} required>
+                  <option value="" disabled>Select semester</option>
+                  {Array.from({ length: 12 }, (_, index) => (
+                    <option key={index + 1} value={String(index + 1)}>
+                      Semester {index + 1}
+                    </option>
+                  ))}
                 </select>
               </label>
             </div>

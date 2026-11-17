@@ -1087,3 +1087,95 @@ h1, h2, h3, h4, h5, h6,
   background: #ffebeb;
   color: #b42332;
 }
+
+
+/* Student profile editor */
+.student-profile-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.student-profile-title-row h2 { margin-bottom: 5px; }
+.student-profile-subtitle {
+  margin: 0;
+  color: #718198;
+  font-size: 12px;
+}
+.student-profile-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e5edf7;
+}
+.profile-feedback { margin: 8px 0; font-size: 12px; }
+.student-profile-form {
+  display: grid;
+  gap: 18px;
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid #e5ecf5;
+}
+.student-profile-form-heading p {
+  margin: 5px 0 0;
+  color: #718198;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.student-profile-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+}
+.student-profile-form-grid label {
+  display: grid;
+  gap: 7px;
+  color: #294663;
+  font-size: 12px;
+  font-weight: 700;
+}
+.student-profile-form-grid input,
+.student-profile-form-grid select,
+.student-profile-form-grid textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid #d5e0ee;
+  border-radius: 8px;
+  background: #fcfdff;
+  color: #19395f;
+  font: inherit;
+}
+.student-profile-form-grid textarea { resize: vertical; }
+.student-profile-form-grid .profile-form-wide { grid-column: 1 / -1; }
+.student-profile-readonly {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px 16px;
+  padding: 13px 15px;
+  border: 1px solid #e5ecf5;
+  border-radius: 9px;
+  background: #f7f9fc;
+  color: #657991;
+  font-size: 11px;
+}
+.student-profile-readonly strong {
+  width: 100%;
+  color: #173b63;
+  font-size: 12px;
+}
+.student-profile-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+@media (max-width: 600px) {
+  .student-profile-title-row { flex-direction: column; }
+  .student-profile-form-grid { grid-template-columns: 1fr; }
+  .student-profile-form-grid .profile-form-wide { grid-column: auto; }
+  .student-profile-actions { flex-direction: column-reverse; }
+  .student-profile-actions .btn { width: 100%; }
+}

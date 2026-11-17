@@ -102,6 +102,9 @@ export default function App() {
             session={session}
             profile={profile}
             onSignOut={signOut}
+            onProfileUpdated={(updates) =>
+              setProfile((current) => ({ ...current, ...updates }))
+            }
           />
         )
       ) : (
