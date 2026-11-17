@@ -1232,3 +1232,156 @@ h1, h2, h3, h4, h5, h6,
     row-gap: 14px;
   }
 }
+
+
+/* Admin workspace: matching student portal visual language with a dedicated navigation rail. */
+.dashboard-wrap.admin-dashboard-shell {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  align-items: start;
+  gap: 0;
+  width: 100%;
+  max-width: none;
+  min-height: calc(100vh - 72px);
+  margin: 0;
+  padding: 0;
+  overflow: clip;
+}
+.admin-sidebar {
+  position: sticky;
+  top: 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  height: calc(100vh - 72px);
+  height: calc(100dvh - 72px);
+  min-width: 0;
+  padding: 24px 14px 18px;
+  overflow-y: auto;
+  background: linear-gradient(180deg, #103d6c, #08264a);
+  color: #fff;
+  z-index: 4;
+}
+.admin-sidebar-brand { display: flex; align-items: center; gap: 11px; padding: 0 8px 22px; margin-bottom: 12px; border-bottom: 1px solid #ffffff26; }
+.admin-sidebar-mark { display: grid; place-items: center; width: 42px; height: 42px; flex: 0 0 42px; border: 2px solid #e1bb5e; border-radius: 50%; color: #f3ca65; font-size: 21px; font-weight: 800; }
+.admin-sidebar-brand strong, .admin-sidebar-brand small, .admin-sidebar-footer small { display: block; }
+.admin-sidebar-brand strong { font-size: 13px; letter-spacing: .5px; }
+.admin-sidebar-brand small { margin-top: 4px; color: #c0d2e7; font-size: 10px; letter-spacing: 1px; }
+.admin-sidebar-label { padding: 10px 10px 7px; color: #9fb8d5; font-size: 10px; font-weight: 800; letter-spacing: 1.5px; }
+.admin-sidebar > button { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 46px; padding: 11px 12px; border: 0; border-radius: 8px; background: transparent; color: #e7f0fb; text-align: left; font: inherit; font-size: 13px; font-weight: 650; cursor: pointer; }
+.admin-sidebar > button span { width: 22px; flex: 0 0 22px; text-align: center; font-size: 18px; }
+.admin-sidebar > button:hover, .admin-sidebar > button.active { background: #1260ae; color: #fff; box-shadow: inset 3px 0 #e0bc65; }
+.admin-sidebar > button.admin-sidebar-logout { margin-top: 8px; }
+.admin-sidebar-footer { margin-top: auto; padding: 16px 8px 5px; border-top: 1px solid #ffffff26; color: #d7e5f6; font-size: 11px; line-height: 1.8; }
+.admin-sidebar-footer small { color: #9fb8d5; }
+.admin-main-content { min-width: 0; width: 100%; padding: 30px clamp(18px, 3vw, 44px) 56px; }
+.admin-main-content .dashboard-top { align-items: center; flex-wrap: wrap; }
+.admin-main-content .dashboard-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.admin-main-content .dashboard-stat-card { min-width: 0; }
+.admin-main-content .dashboard-stat-card small, .admin-main-content .dashboard-stat-card strong, .admin-main-content .dashboard-stat-foot { min-width: 0; overflow-wrap: anywhere; }
+.admin-main-content .stat-icon-4 { background: #ffebeb; color: #b42332; }
+.admin-main-content .stat-icon-5 { background: #e8efff; color: #245ca7; }
+.admin-profile-card { display: flex; align-items: center; gap: 16px; min-width: 0; margin: 22px 0; padding: 18px 20px; border: 1px solid #dce6f2; border-radius: 13px; background: linear-gradient(110deg, #fff, #f1f6fd); }
+.admin-profile-avatar { display: grid; place-items: center; width: 54px; height: 54px; flex: 0 0 54px; border: 1px solid #ecd8a5; border-radius: 50%; background: #fff6df; color: #8c661a; font-size: 22px; font-weight: 800; }
+.admin-profile-copy { min-width: 0; flex: 1; }
+.admin-profile-copy h2 { margin: 4px 0; color: #0a3768; font-size: 19px; overflow-wrap: anywhere; }
+.admin-profile-copy p { margin: 0; color: #718198; font-size: 12px; overflow-wrap: anywhere; }
+.admin-profile-role { flex: 0 0 auto; padding: 7px 10px; border: 1px solid #ead9ad; border-radius: 30px; background: #fff9e9; color: #7a5a18; font-size: 11px; font-weight: 800; }
+.admin-main-content .dashboard-admin-grid { grid-template-columns: minmax(0, 1.2fr) minmax(260px, .8fr); }
+.admin-main-content .dashboard-panel { min-width: 0; }
+.admin-main-content .dashboard-toolbar { flex-wrap: wrap; }
+.admin-main-content .dashboard-toolbar input { min-width: min(100%, 220px); }
+.admin-main-content .admin-case-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: end; }
+.admin-main-content .admin-case-actions .status-control { width: 100%; min-width: 0; max-width: none; }
+.admin-main-content .admin-case-actions input, .admin-main-content .admin-case-actions select { width: 100%; min-width: 0; }
+.admin-complaint-student { display: grid; gap: 3px; margin-top: 5px; overflow-wrap: anywhere; }
+.admin-complaint-student strong { color: #274766; font-size: 12px; }
+.admin-complaint-student span { color: #75869b; font-size: 10px; line-height: 1.45; }
+.admin-students-panel { margin-top: 26px; }
+.admin-students-panel .dashboard-panel-title { align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+.admin-students-panel .dashboard-panel-title p { margin: 5px 0 0; color: #718198; font-size: 12px; line-height: 1.5; }
+.admin-directory-count { flex: 0 0 auto; padding: 7px 10px; border-radius: 20px; background: #edf4ff; color: #245ca7; font-size: 11px; font-weight: 800; }
+.admin-student-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+.admin-student-card { min-width: 0; padding: 15px; border: 1px solid #e2eaf4; border-radius: 11px; background: #fbfcfe; }
+.admin-student-card-head { display: flex; align-items: center; gap: 10px; min-width: 0; padding-bottom: 12px; border-bottom: 1px solid #e8eef6; }
+.admin-student-avatar { display: grid; place-items: center; width: 38px; height: 38px; flex: 0 0 38px; border-radius: 50%; background: #e9f0fa; color: #174b83; font-weight: 800; }
+.admin-student-card-head > div { display: grid; gap: 3px; min-width: 0; }
+.admin-student-card-head strong { color: #183b61; font-size: 12px; overflow-wrap: anywhere; }
+.admin-student-card-head small { color: #77889c; font-size: 10px; overflow-wrap: anywhere; }
+.admin-student-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding-top: 12px; }
+.admin-student-details > div { display: grid; gap: 4px; min-width: 0; }
+.admin-student-details small { color: #7a899c; font-size: 9px; font-weight: 800; letter-spacing: .6px; }
+.admin-student-details strong { color: #294663; font-size: 11px; overflow-wrap: anywhere; }
+@media (max-width: 1050px) {
+  .admin-main-content .dashboard-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .admin-main-content .dashboard-admin-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  .dashboard-wrap.admin-dashboard-shell { grid-template-columns: minmax(0, 1fr); }
+  .admin-sidebar { position: sticky; top: 0; height: auto; min-height: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; padding: 10px; }
+  .admin-sidebar-brand { grid-column: 1 / -1; padding: 0 5px 10px; margin-bottom: 2px; }
+  .admin-sidebar-label, .admin-sidebar-footer { display: none; }
+  .admin-sidebar > button { min-width: 0; justify-content: flex-start; padding: 9px 7px; font-size: 11px; }
+  .admin-sidebar > button span { width: 18px; flex-basis: 18px; font-size: 15px; }
+  .admin-main-content { padding: 22px 14px 38px; }
+  .admin-profile-card { align-items: flex-start; flex-wrap: wrap; }
+  .admin-profile-role { margin-left: 70px; }
+}
+@media (max-width: 520px) {
+  .admin-main-content .dashboard-stats { grid-template-columns: minmax(0, 1fr); }
+  .admin-main-content .admin-case-actions { grid-template-columns: minmax(0, 1fr); }
+  .admin-student-grid { grid-template-columns: minmax(0, 1fr); }
+  .admin-student-details { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .admin-main-content .dashboard-top { align-items: flex-start; flex-direction: column; }
+}
+
+
+.admin-directory-tools {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  min-width: min(100%, 360px);
+}
+.admin-directory-tools input {
+  width: min(100%, 300px);
+  min-width: 0;
+  min-height: 40px;
+  padding: 9px 11px;
+  border: 1px solid #d5e0ee;
+  border-radius: 8px;
+  background: #fcfdff;
+  color: #19395f;
+  font: inherit;
+  font-size: 11px;
+}
+@media (max-width: 520px) {
+  .admin-directory-tools {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .admin-directory-tools input { width: 100%; }
+}
+
+
+/* Keep the admin remark editor inside the complaint card without field collisions. */
+.admin-remark-editor { display: grid; gap: 8px; min-width: 0; }
+.admin-remark-editor .status-control { width: 100%; min-width: 0; }
+.admin-remark-editor textarea {
+  display: block; width: 100%; min-width: 0; min-height: 64px; resize: vertical;
+  box-sizing: border-box; padding: 9px 10px; border: 1px solid #d5e0ee;
+  border-radius: 8px; color: #19395f; font: inherit; font-size: 11px;
+}
+.admin-save-remark { justify-self: start; min-height: 36px; padding: 7px 12px; }
+.admin-student-details strong { white-space: normal; overflow-wrap: anywhere; word-break: break-word; }
+
+.admin-student-avatar-image {
+  display: block;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #dce6f2;
+}
