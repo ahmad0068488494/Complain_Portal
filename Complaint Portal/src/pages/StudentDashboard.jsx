@@ -131,7 +131,7 @@ export default function StudentDashboard({ session, profile, onSignOut }) {
       .on(
         "postgres_changes",
         {
-          event: "UPDATE",
+          event: "*",
           schema: "public",
           table: "complaints",
           filter: "user_id=eq." + session.user.id,
@@ -270,6 +270,7 @@ export default function StudentDashboard({ session, profile, onSignOut }) {
     ["Pending", counts.pending || 0, "clock"],
     ["In progress", counts.in_progress || 0, "activity"],
     ["Resolved", counts.resolved || 0, "check-circle"],
+    ["Rejected", counts.rejected || 0, "x-circle"],
   ];
 
   return (
@@ -475,12 +476,12 @@ export default function StudentDashboard({ session, profile, onSignOut }) {
                     ? "◷"
                     : icon === "activity"
                       ? "↗"
-                      : "✓"}
+                      : icon === "x-circle" ? "✕" : "✓"}
               </span>
               <small>{label}</small>
               <strong>{number}</strong>
               <span className="dashboard-stat-foot">
-                {i === 0 ? "Across the portal view" : "Current status"}
+                {i === 0 ? "Your submitted complaints" : "Current status"}
               </span>
             </div>
           ))}

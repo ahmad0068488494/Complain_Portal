@@ -24,6 +24,11 @@ export async function apiRequest(path, { session, method = "GET", body } = {}) {
 
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
+    if (response.status === 502 || response.status === 504) {
+      throw new Error(
+        "The Complaint Portal backend is not responding. Start the backend server from the backend folder (npm run dev) and confirm it is listening on port 5000.",
+      );
+    }
     throw new Error(payload.error || `Request failed (${response.status}).`);
   }
   return payload;

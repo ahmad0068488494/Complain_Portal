@@ -1042,3 +1042,32 @@ h1, h2, h3, h4, h5, h6,
 .student-info-grid strong{color:#254464;font-size:13px;font-weight:650;overflow-wrap:anywhere}
 .student-main-content .student-welcome-panel{margin-top:0}
 @media(max-width:600px){.student-main-content .student-info-card{grid-template-columns:44px minmax(0,1fr);padding:17px;gap:12px}.student-info-card .dashboard-avatar{width:42px;height:42px;font-size:18px}.student-info-content h2{font-size:20px;margin-bottom:14px}.student-info-grid{grid-template-columns:1fr;gap:9px}.student-info-grid>div{padding:10px 12px}}
+
+
+/* Student dashboard: keep the navigation visible while the page scrolls. */
+@media (min-width: 761px) {
+  .student-sidebar {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    min-height: 100vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+
+/* Rejected complaints use a distinct red status icon and card accent. */
+.student-main-content .stat-icon-4 {
+  background: #ffebeb;
+  color: #b42332;
+}
+
+@media (max-width: 760px) {
+  .student-sidebar {
+    position: static;
+    height: auto;
+    min-height: auto;
+    overflow: visible;
+  }
+}
