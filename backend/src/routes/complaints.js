@@ -53,19 +53,6 @@ router.post("/", async (req, res) => {
     });
   }
 
-  if (evidence_path !== null) {
-    const parts = typeof evidence_path === "string" ? evidence_path.split("/") : [];
-    const validFileName = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.(jpg|png|webp)$/i;
-    if (
-      !evidenceCategories.includes(category.trim()) ||
-      parts.length !== 2 ||
-      parts[0] !== req.user.id ||
-      !validFileName.test(parts[1])
-    ) {
-      return res.status(400).json({ error: "Image evidence is not valid for this grievance category." });
-    }
-  }
-
   const { data, error } = await supabase
     .from("complaints")
     .insert({

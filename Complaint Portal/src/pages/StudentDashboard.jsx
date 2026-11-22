@@ -873,8 +873,8 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
                   Please avoid including passwords or unnecessary sensitive
                   information.
                 </small>
-                <button className="btn btn-primary" type="submit">
-                  Submit complaint <span aria-hidden="true">→</span>
+                <button className="btn btn-primary" type="submit" disabled={evidenceUploading}>
+                  {evidenceUploading ? "Uploading image…" : "Submit complaint"} <span aria-hidden="true">→</span>
                 </button>
               </div>
             </form>
