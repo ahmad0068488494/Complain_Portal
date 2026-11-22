@@ -17,11 +17,25 @@ router.get("/", async (req, res) => {
     return res.status(500).json({ error: "Could not fetch your complaints." });
   }
 
-  res.json({ complaints: data || [] });
+  const complaints = await Promise.all((data || []).map(async (item) => {
+    if (!item.evidence_path) return { ...item, evidence_signed_url: "" };
+    const { data: signed, error: signedError } = await supabase.storage
+      .from("complaint-evidence")
+      .createSignedUrl(item.evidence_path, 3600);
+    return { ...item, evidence_signed_url: signedError ? "" : signed?.signedUrl || "" };
+  }));
+
+  res.json({ complaints });
 });
 
 router.post("/", async (req, res) => {
-  const { title, description, category } = req.body || {};
+  const { title, description, category, evidence_path = null } = req.body || {};
+  const evidenceCategories = [
+    "Safety & Security",
+    "Food & Canteen",
+    "Hostel & Accommodation",
+    "Infrastructure & Facilities",
+  ];
 
   if (
     typeof title !== "string" ||
@@ -47,6 +61,7 @@ router.post("/", async (req, res) => {
       description: description.trim(),
       category: category.trim(),
       status: "pending",
+      evidence_path,
     })
     .select("*")
     .single();
