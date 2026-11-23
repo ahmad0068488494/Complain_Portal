@@ -66,6 +66,14 @@ const demoComplaints = [
     admin_remarks: "Access has been restored.",
   },
 ];
+const evidenceCategories = new Set([
+  "Safety & Security",
+  "Food & Canteen",
+  "Hostel & Accommodation",
+  "Infrastructure & Facilities",
+]);
+const allowedEvidenceTypes = ["image/jpeg", "image/png", "image/webp"];
+const maxEvidenceSize = 5 * 1024 * 1024;
 const dateLabel = (value) =>
   value
     ? new Date(value).toLocaleDateString(undefined, {
@@ -83,6 +91,8 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
   const [notice, setNotice] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [evidenceFile, setEvidenceFile] = useState(null);
+  const [evidenceUploading, setEvidenceUploading] = useState(false);
   const [category, setCategory] = useState(() => {
     const selectedCategory = sessionStorage.getItem("selectedComplaintCategory");
     if (selectedCategory) {
@@ -343,6 +353,14 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
     e.preventDefault();
     setError("");
     setNotice("");
+    if (evidenceFile && !evidenceCategories.has(category)) {
+      setError("Image evidence is available only for the four supported grievance categories.");
+      return;
+    }
+    if (evidenceFile && (!allowedEvidenceTypes.includes(evidenceFile.type) || evidenceFile.size > maxEvidenceSize)) {
+      setError("Choose a JPG, PNG or WebP image up to 5 MB.");
+      return;
+    }
     if (demoMode || !supabase) {
       const referenceId = `CP-${new Date().getFullYear()}-${crypto.randomUUID().replace(/-/g, "").slice(0, 8).toUpperCase()}`;
       setItems((old) => [
@@ -361,13 +379,29 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
       ]);
       setTitle("");
       setDescription("");
+      setEvidenceFile(null);
       setNotice(
         `Demo complaint ID: ${referenceId}. This is a local preview only, not saved to the database.`,
       );
       return;
     }
 
+    let uploadedEvidencePath = null;
+    setEvidenceUploading(Boolean(evidenceFile));
     try {
+      if (evidenceFile) {
+        const extension = evidenceFile.type === "image/jpeg" ? "jpg" : evidenceFile.type.split("/")[1];
+        uploadedEvidencePath = `${session.user.id}/${crypto.randomUUID()}.${extension}`;
+        const { error: uploadError } = await supabase.storage
+          .from("complaint-evidence")
+          .upload(uploadedEvidencePath, evidenceFile, {
+            cacheControl: "3600",
+            contentType: evidenceFile.type,
+            upsert: false,
+          });
+        if (uploadError) throw uploadError;
+      }
+
       const result = await apiRequest("/complaints", {
         session,
         method: "POST",
@@ -375,18 +409,25 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
           title: title.trim(),
           description: description.trim(),
           category,
+          evidence_path: uploadedEvidencePath,
         },
       });
       const createdComplaint = result.complaint;
       setTitle("");
       setDescription("");
+      setEvidenceFile(null);
       setItems((old) => [createdComplaint, ...old]);
       setNotice(
         `Complaint submitted successfully. Your database reference ID is ${createdComplaint.reference_id}.`,
       );
       await load();
     } catch (requestError) {
+      if (uploadedEvidencePath) {
+        await supabase.storage.from("complaint-evidence").remove([uploadedEvidencePath]).catch(() => {});
+      }
       setError(requestError.message || "Could not submit your complaint.");
+    } finally {
+      setEvidenceUploading(false);
     }
   }
 
@@ -777,13 +818,44 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
                 Grievance category
                 <select
                   value={category}
-                  onChange={(e) => setCategory(e.target.value)}
+                  onChange={(e) => {
+                    setCategory(e.target.value);
+                    if (!evidenceCategories.has(e.target.value)) setEvidenceFile(null);
+                  }}
                 >
                   {categories.map((c) => (
                     <option key={c}>{c}</option>
                   ))}
                 </select>
               </label>
+              {evidenceCategories.has(category) && (
+                <label className="complaint-evidence-upload">
+                  Supporting image (optional)
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] || null;
+                      e.target.value = "";
+                      if (!file) return;
+                      if (!allowedEvidenceTypes.includes(file.type) || file.size > maxEvidenceSize) {
+                        setError("Choose a JPG, PNG or WebP image up to 5 MB.");
+                        setEvidenceFile(null);
+                        return;
+                      }
+                      setError("");
+                      setEvidenceFile(file);
+                    }}
+                  />
+                  <small>Upload one JPG, PNG or WebP image (maximum 5 MB) to help explain the issue.</small>
+                  {evidenceFile && (
+                    <span className="complaint-evidence-selected">
+                      {evidenceFile.name} · {(evidenceFile.size / (1024 * 1024)).toFixed(2)} MB
+                      <button type="button" onClick={() => setEvidenceFile(null)}>Remove</button>
+                    </span>
+                  )}
+                </label>
+              )}
               <label>
                 Describe your concern
                 <textarea
@@ -801,8 +873,8 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
                   Please avoid including passwords or unnecessary sensitive
                   information.
                 </small>
-                <button className="btn btn-primary" type="submit">
-                  Submit complaint <span aria-hidden="true">→</span>
+                <button className="btn btn-primary" type="submit" disabled={evidenceUploading}>
+                  {evidenceUploading ? "Uploading image…" : "Submit complaint"} <span aria-hidden="true">→</span>
                 </button>
               </div>
             </form>
@@ -956,6 +1028,15 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
                   </small>
                   <small>Submitted {dateLabel(x.created_at)}</small>
                 </div>
+                {x.evidence_signed_url && (
+                  <div className="complaint-evidence-preview">
+                    <strong>Supporting evidence</strong>
+                    <a href={x.evidence_signed_url} target="_blank" rel="noreferrer">
+                      <img src={x.evidence_signed_url} alt="Complaint supporting evidence" loading="lazy" />
+                      <span>View full image ↗</span>
+                    </a>
+                  </div>
+                )}
                 {x.admin_remarks && (
                   <div className="dashboard-remark">
                     <strong>Administrator update</strong>

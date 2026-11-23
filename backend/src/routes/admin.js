@@ -87,11 +87,19 @@ router.get("/complaints", async (_req, res) => {
   }
   const emailById = new Map(authUsers.map((user) => [user.id, user.email || ""]));
 
-  const complaints = (data || []).map((item) => {
+  const complaints = await Promise.all((data || []).map(async (item) => {
     const student = profileById.get(item.user_id) || {};
     const assignee = profileById.get(item.assigned_to) || {};
+    let evidence_signed_url = "";
+    if (item.evidence_path) {
+      const { data: signed, error: signedError } = await supabase.storage
+        .from("complaint-evidence")
+        .createSignedUrl(item.evidence_path, 3600);
+      evidence_signed_url = signedError ? "" : signed?.signedUrl || "";
+    }
     return {
       ...item,
+      evidence_signed_url,
       student_name: student.full_name || "Student",
       student_email: emailById.get(item.user_id) || "",
       student_phone: student.phone || "",
@@ -101,7 +109,7 @@ router.get("/complaints", async (_req, res) => {
       student_semester: student.semester || "",
       assigned_name: assignee.full_name || "",
     };
-  });
+  }));
 
   res.json({ complaints });
 });

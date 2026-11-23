@@ -753,6 +753,15 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
                   <small>Submitted {dateLabel(x.created_at)}</small>
                 {x.assigned_name && <small>Assigned to {x.assigned_name}</small>}
                 </div>
+                {x.evidence_signed_url && (
+                  <div className="complaint-evidence-preview">
+                    <strong>Student-submitted image evidence</strong>
+                    <a href={x.evidence_signed_url} target="_blank" rel="noreferrer">
+                      <img src={x.evidence_signed_url} alt="Complaint supporting evidence" loading="lazy" />
+                      <span>View full image ↗</span>
+                    </a>
+                  </div>
+                )}
                 {x.admin_remarks && (
                   <div className="dashboard-remark">
                     <strong>Administrator update</strong>
