@@ -1,8 +1,30 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "../lib/supabase.js";
 export default function AuthPage({ mode, onAuthenticated }) {
   const register = mode === "register";
   const [role, setRole] = useState("student");
+  const formRef = useRef(null);
+
+  const clearAuthFields = () => {
+    setName("");
+    setEmail("");
+    setPhone("");
+    setRegNo("");
+    setDepartment("");
+    setCourse("");
+    setSemester("");
+    setPassword("");
+    setConfirm("");
+    setShow(false);
+    setError("");
+    setNotice("");
+    if (formRef.current) formRef.current.reset();
+  };
+
+  // AuthPage remains mounted when the hash changes between Login/Register.
+  useEffect(() => {
+    clearAuthFields();
+  }, [mode]);
   const [show, setShow] = useState(false);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
@@ -129,7 +151,12 @@ export default function AuthPage({ mode, onAuthenticated }) {
               type="button"
               className={"role-option " + (role === v ? "selected" : "")}
               key={v}
-              onClick={() => setRole(v)}
+              onClick={() => {
+                if (role !== v) {
+                  setRole(v);
+                  clearAuthFields();
+                }
+              }}
             >
               <span>{i}</span>
               <div>
@@ -143,7 +170,7 @@ export default function AuthPage({ mode, onAuthenticated }) {
             ▥ &nbsp; Together for a <strong>Better Campus</strong>
           </div>
         </aside>
-        <form className="auth-form" onSubmit={submit}>
+        <form ref={formRef} className="auth-form" onSubmit={submit} autoComplete="off">
           <div className="auth-tabs">
             <a className={!register ? "selected" : ""} href="#login">
               Login
@@ -166,7 +193,8 @@ export default function AuthPage({ mode, onAuthenticated }) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                autoComplete="name"
+                autoComplete="off"
+                name="portal-registration-full-name"
                 placeholder="Enter your full name"
               />
             </label>
@@ -179,7 +207,8 @@ export default function AuthPage({ mode, onAuthenticated }) {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
-                autoComplete="tel"
+                autoComplete="off"
+                name="portal-registration-contact"
                 inputMode="tel"
                 pattern="[0-9+() -]{7,20}"
                 placeholder="Enter your contact number"
@@ -193,7 +222,10 @@ export default function AuthPage({ mode, onAuthenticated }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              autoComplete="email"
+              autoComplete="off"
+              name={register ? "portal-registration-email" : "portal-login-email"}
+              autoCapitalize="none"
+              spellCheck={false}
               placeholder="you@college.edu"
             />
           </label>
@@ -205,6 +237,8 @@ export default function AuthPage({ mode, onAuthenticated }) {
                   value={regNo}
                   onChange={(e) => setRegNo(e.target.value)}
                   required
+                  autoComplete="off"
+                  name="portal-registration-crn"
                   placeholder="Enter CRN number"
                 />
               </label>
@@ -266,7 +300,10 @@ export default function AuthPage({ mode, onAuthenticated }) {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={8}
-                autoComplete={register ? "new-password" : "current-password"}
+                autoComplete="new-password"
+                name={register ? "portal-registration-password" : "portal-login-password"}
+                autoCapitalize="none"
+                spellCheck={false}
                 placeholder={
                   register
                     ? "Create a password (8+ characters)"
@@ -288,6 +325,7 @@ export default function AuthPage({ mode, onAuthenticated }) {
                 required
                 minLength={8}
                 autoComplete="new-password"
+                name="portal-registration-confirm-password"
                 placeholder="Confirm password"
               />
             </label>
