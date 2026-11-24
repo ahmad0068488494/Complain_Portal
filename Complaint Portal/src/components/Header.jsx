@@ -27,10 +27,10 @@ export default function Header({ active, session, profile, onSignOut }) {
         <>
           <nav aria-label="Main navigation">
             {nav.map(([label, id]) => (
-              <a key={id} className={active === id ? "active" : ""} href={"#" + id} onClick={() => setServicesOpen(false)}>{label}</a>
+              <a key={id} className={active === id && !(id === "about" && servicesOpen) ? "active" : ""} href={"#" + id} onClick={() => setServicesOpen(false)}>{label}</a>
             ))}
             <div className={`services-nav ${servicesOpen ? "is-open" : ""}`}>
-              <button type="button" className={`services-toggle ${active === "services" || active === "faqs" ? "active" : ""}`}
+              <button type="button" className={`services-toggle ${servicesOpen || active === "services" || active === "faqs" ? "active" : ""}`}
                 aria-expanded={servicesOpen} aria-haspopup="true"
                 onClick={() => setServicesOpen((open) => !open)}
                 onKeyDown={(event) => { if (event.key === "Escape") setServicesOpen(false); }}>
