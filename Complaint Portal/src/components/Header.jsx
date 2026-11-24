@@ -27,7 +27,7 @@ export default function Header({ active, session, profile, onSignOut }) {
         <>
           <nav aria-label="Main navigation">
             {nav.map(([label, id]) => (
-              <a key={id} className={active === id ? "active" : ""} href={"#" + id}>{label}</a>
+              <a key={id} className={active === id ? "active" : ""} href={"#" + id} onClick={() => setServicesOpen(false)}>{label}</a>
             ))}
             <div className={`services-nav ${servicesOpen ? "is-open" : ""}`}>
               <button type="button" className={`services-toggle ${active === "services" || active === "faqs" ? "active" : ""}`}
@@ -50,7 +50,7 @@ export default function Header({ active, session, profile, onSignOut }) {
                 </div>
               )}
             </div>
-            {session && <a className={active === "track" ? "active" : ""} href="#track">Track Complaint</a>}
+            {session && <a className={active === "track" ? "active" : ""} href="#track" onClick={() => setServicesOpen(false)}>Track Complaint</a>}
           </nav>
           <div className="header-actions">
             {session && profile?.role === "student" && <a className="btn btn-primary dashboard-header-link" href="#dashboard">My Dashboard</a>}
