@@ -79,7 +79,7 @@ export default function App() {
     );
   } else {
     page = {
-      home: <Home />,
+      home: <Home session={session} />,
       about: <About />,
       services: <Services session={session} profile={profile} />,
       track: ready && session ? <TrackComplaint /> : (
