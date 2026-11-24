@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 
 const frontendDir = path.dirname(fileURLToPath(import.meta.url));
-const backendDir = path.resolve(frontendDir, "../../backend");
+const backendDir = path.resolve(frontendDir, "../backend");
 const isWindows = process.platform === "win32";
 
 const processes = [
