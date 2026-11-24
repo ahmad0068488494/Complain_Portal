@@ -793,3 +793,38 @@ nav a:hover {
     flex-basis: 39px;
   }
 }
+
+
+/* Hover feedback should exist only while a real mouse/trackpad is over an item.
+   Touch devices must not retain the browser's sticky :hover state after a tap. */
+@media (hover: hover) and (pointer: fine) {
+  .site-header nav > a:not(.active):hover,
+  .site-header nav .services-toggle:not(.active):hover {
+    color: #8fc4ff;
+    background: transparent;
+  }
+  .site-header nav .services-dropdown a:hover,
+  .profile-dropdown a:hover,
+  .profile-dropdown button:hover {
+    color: #125cc2;
+    background: #edf5ff;
+  }
+}
+@media (hover: none), (pointer: coarse) {
+  .site-header nav > a:not(.active):hover,
+  .site-header nav .services-toggle:not(.active):hover {
+    color: #e0ebfa;
+    background: transparent;
+    box-shadow: none;
+  }
+  .site-header nav .services-dropdown a:hover {
+    color: #17375e;
+    background: transparent;
+  }
+  .site-header nav > a.active,
+  .site-header nav .services-toggle.active {
+    color: #8fc4ff;
+    background: transparent;
+    box-shadow: none;
+  }
+}
