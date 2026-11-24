@@ -82,16 +82,6 @@ export default function Header({ active, session, profile, onSignOut }) {
                 </button>
                 <div className={`profile-dropdown ${profileMenuOpen ? "is-visible" : ""}`} role="menu" aria-hidden={!profileMenuOpen}>
                   <a href="#dashboard" tabIndex={profileMenuOpen ? 0 : -1} role="menuitem" onClick={() => setProfileMenuOpen(false)}>Dashboard</a>
-                  {serviceLinks.map(([label, id, icon]) => (
-                    <a key={id} href={"#" + (label === "Raise a Complaint" ? (session ? "dashboard" : "login") : id)}
-                      tabIndex={profileMenuOpen ? 0 : -1} role="menuitem"
-                      onClick={() => {
-                        if (label === "Raise a Complaint" && session) sessionStorage.setItem("focusComplaintForm", "true");
-                        setProfileMenuOpen(false);
-                      }}>
-                      <span className="services-menu-icon" aria-hidden="true">{icon}</span><span>{label}</span>
-                    </a>
-                  ))}
                   <button type="button" tabIndex={profileMenuOpen ? 0 : -1} role="menuitem" onClick={() => { setProfileMenuOpen(false); onSignOut?.(); }}>Logout</button>
                 </div>
               </div>
