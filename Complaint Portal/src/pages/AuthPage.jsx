@@ -195,6 +195,8 @@ export default function AuthPage({ mode, onAuthenticated }) {
                 required
                 autoComplete="off"
                 name="portal-registration-full-name"
+                readOnly
+                onFocus={(e) => e.currentTarget.removeAttribute("readonly")}
                 placeholder="Enter your full name"
               />
             </label>
@@ -209,6 +211,8 @@ export default function AuthPage({ mode, onAuthenticated }) {
                 required
                 autoComplete="off"
                 name="portal-registration-contact"
+                readOnly
+                onFocus={(e) => e.currentTarget.removeAttribute("readonly")}
                 inputMode="tel"
                 pattern="[0-9+() -]{7,20}"
                 placeholder="Enter your contact number"
@@ -226,6 +230,8 @@ export default function AuthPage({ mode, onAuthenticated }) {
               name={register ? "portal-registration-email" : "portal-login-email"}
               autoCapitalize="none"
               spellCheck={false}
+              readOnly
+              onFocus={(e) => e.currentTarget.removeAttribute("readonly")}
               placeholder="you@college.edu"
             />
           </label>
@@ -239,6 +245,8 @@ export default function AuthPage({ mode, onAuthenticated }) {
                   required
                   autoComplete="off"
                   name="portal-registration-crn"
+                  readOnly
+                  onFocus={(e) => e.currentTarget.removeAttribute("readonly")}
                   placeholder="Enter CRN number"
                 />
               </label>
@@ -304,6 +312,8 @@ export default function AuthPage({ mode, onAuthenticated }) {
                 name={register ? "portal-registration-password" : "portal-login-password"}
                 autoCapitalize="none"
                 spellCheck={false}
+                readOnly
+                onFocus={(e) => e.currentTarget.removeAttribute("readonly")}
                 placeholder={
                   register
                     ? "Create a password (8+ characters)"
@@ -326,6 +336,8 @@ export default function AuthPage({ mode, onAuthenticated }) {
                 minLength={8}
                 autoComplete="new-password"
                 name="portal-registration-confirm-password"
+                readOnly
+                onFocus={(e) => e.currentTarget.removeAttribute("readonly")}
                 placeholder="Confirm password"
               />
             </label>
