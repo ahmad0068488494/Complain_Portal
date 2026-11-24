@@ -409,3 +409,47 @@ nav a:hover {
   .brand { font-size: 13px; gap: 6px; }
   .brand-icon { width: 32px; height: 32px; flex-basis: 32px; font-size: 19px; }
 }
+
+
+/* Mobile dropdown fix: allow the Services menu to render below the nav.
+   The previous horizontal-scroll container clipped absolutely positioned menus. */
+@media (max-width: 900px) {
+  .site-header > nav {
+    overflow: visible;
+    flex-wrap: wrap;
+    align-items: center;
+    row-gap: 2px;
+    white-space: normal;
+  }
+  .site-header > nav > a,
+  .site-header > nav > .services-nav {
+    flex: 0 0 auto;
+  }
+  .services-nav {
+    position: relative;
+    z-index: 25;
+  }
+  .services-dropdown {
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 40;
+    display: grid;
+    visibility: visible;
+    opacity: 1;
+  }
+  .site-header nav .services-toggle {
+    gap: 0;
+  }
+}
+@media (max-width: 520px) {
+  .site-header > nav {
+    overflow: visible;
+    flex-wrap: wrap;
+    gap: 4px clamp(16px, 5vw, 24px);
+    padding-bottom: 4px;
+  }
+  .services-dropdown {
+    width: min(242px, calc(100vw - 28px));
+    left: 0;
+  }
+}
