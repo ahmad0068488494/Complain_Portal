@@ -10,6 +10,7 @@ const serviceLinks = [
 export default function Header({ active, session, profile, onSignOut }) {
   const [servicesOpen, setServicesOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const isAdmin = Boolean(session && profile?.role === "admin");
 
   const closeMobileMenu = () => {
@@ -62,14 +63,21 @@ export default function Header({ active, session, profile, onSignOut }) {
                   <a className="btn btn-ghost" href="#login" onClick={closeMobileMenu}>Login</a>
                   <a className="btn btn-primary" href="#register" onClick={closeMobileMenu}>Register</a>
                 </>
-              ) : (
-                <>
-                  <button type="button" className="mobile-signout-link" onClick={() => { closeMobileMenu(); onSignOut?.(); }}>Sign out</button>
-                </>
-              )}
+              ) : null}
             </div>
           </nav>
           <div className="header-actions">
+            {session && profile?.role !== "admin" && (
+              <div className={`profile-menu ${profileMenuOpen ? "is-open" : ""}`}>
+                <button type="button" className="profile-trigger" aria-label="Open profile menu" aria-expanded={profileMenuOpen}
+                  onClick={() => setProfileMenuOpen((open) => !open)}>
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5" /><path d="M5 20c.6-3.7 3.1-5.5 7-5.5s6.4 1.8 7 5.5" /></svg>
+                </button>
+                {profileMenuOpen && <div className="profile-dropdown" role="menu">
+                  <button type="button" role="menuitem" onClick={() => { setProfileMenuOpen(false); onSignOut?.(); }}>Logout</button>
+                </div>}
+              </div>
+            )}
             {!session && (
               <div className="desktop-auth-links">
                 <a className="btn btn-ghost" href="#login">Login</a>
