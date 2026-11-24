@@ -5,7 +5,6 @@ const nav = [["Home", "home"], ["About", "about"]];
 const serviceLinks = [
   ["Raise a Complaint", "login", "✎"],
   ["Grievance Categories", "services", "▦"],
-  ["Help & FAQs", "faqs", "?"],
 ];
 
 export default function Header({ active, session, profile, onSignOut }) {
@@ -56,6 +55,7 @@ export default function Header({ active, session, profile, onSignOut }) {
                 </div>
               )}
             </div>
+            <a className={active === "faqs" ? "active" : ""} href="#faqs" onClick={closeMobileMenu}>Help</a>
             {session && <a className={active === "track" ? "active" : ""} href="#track" onClick={closeMobileMenu}>Track Complaint</a>}
             <div className="mobile-auth-links">
               {!session ? (
