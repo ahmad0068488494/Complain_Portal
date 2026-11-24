@@ -104,7 +104,7 @@ router.get("/complaints", async (_req, res) => {
   }
 
   const profileById = new Map((profiles || []).map((person) => [person.id, person]));
-  const { users: authUsers, error: authError } = await listAllAuthUsers();
+  const { users: authUsers, error: authError } = await listAllAuthUsersCached();
   if (authError) {
     console.error("Admin complaint email lookup failed:", authError);
     return res.status(500).json({ error: "Could not fetch complaint contact details." });

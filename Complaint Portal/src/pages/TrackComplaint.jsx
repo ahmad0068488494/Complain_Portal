@@ -31,12 +31,6 @@ export default function TrackComplaint() {
       setError("Enter your complaint reference ID.");
       return;
     }
-    if (!supabase) {
-      setError(
-        "Live tracking is not configured. Connect Supabase to enable complaint tracking.",
-      );
-      return;
-    }
     setLoading(true);
     try {
       const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
