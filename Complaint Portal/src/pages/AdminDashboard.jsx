@@ -363,10 +363,6 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
       )}
       {admin && (
         <aside className="admin-sidebar">
-          <div className="admin-sidebar-brand">
-            <span className="admin-sidebar-mark">C</span>
-            <div><strong>COMPLAINT</strong><small>ADMINISTRATION</small></div>
-          </div>
           <div className="admin-sidebar-label">WORKSPACE</div>
           <button type="button" title="Overview" aria-label="Overview" className="active" onClick={() => document.getElementById("student-dashboard-content")?.scrollIntoView({ behavior: "smooth" })}><span>▦</span>Overview</button>
           <button type="button" title="Complaints" aria-label="Complaints" onClick={() => document.getElementById("complaint-management")?.scrollIntoView({ behavior: "smooth" })}><span>▤</span>Complaints</button>
