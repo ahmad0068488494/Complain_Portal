@@ -1455,3 +1455,35 @@ nav a:hover {
     max-width: 100% !important;
   }
 }
+
+
+/* Account placement and mobile session navigation */
+@media (min-width: 761px) {
+  .site-header > .header-actions {
+    margin-right: -10px;
+  }
+}
+@media (max-width: 760px) {
+  /* The account avatar stays on desktop; mobile account actions live
+     inside the hamburger overlay to keep the header uncluttered. */
+  .site-header .profile-menu {
+    display: none !important;
+  }
+  .site-header .mobile-auth-links .mobile-logout-btn {
+    display: flex !important;
+    width: 100% !important;
+    min-height: 40px !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    color: #fff !important;
+    border: 1px solid #c8dcf5 !important;
+    background: transparent !important;
+    border-radius: 7px !important;
+    font: 600 13px/1.2 'Inter', ui-sans-serif, system-ui, sans-serif !important;
+    cursor: pointer !important;
+  }
+  .site-header .mobile-auth-links .mobile-logout-btn:hover {
+    background: #ffffff14 !important;
+  }
+}
