@@ -17,6 +17,30 @@ async function listAllAuthUsers() {
   return { users, error: null };
 }
 
+// Reuse the Auth directory for both admin screens rather than fetching every
+// Auth user again on each dashboard refresh.
+let authUsersCache = null;
+let authUsersCacheExpiresAt = 0;
+let authUsersRequest = null;
+
+async function listAllAuthUsersCached() {
+  if (authUsersCache && Date.now() < authUsersCacheExpiresAt) {
+    return { users: authUsersCache, error: null };
+  }
+  if (authUsersRequest) return authUsersRequest;
+  authUsersRequest = listAllAuthUsers();
+  try {
+    const result = await authUsersRequest;
+    if (!result.error) {
+      authUsersCache = result.users;
+      authUsersCacheExpiresAt = Date.now() + 60 * 1000;
+    }
+    return result;
+  } finally {
+    authUsersRequest = null;
+  }
+}
+
 router.get("/users", async (_req, res) => {
   const { data: profiles, error: profileError } = await supabase
     .from("profiles")
@@ -29,7 +53,7 @@ router.get("/users", async (_req, res) => {
     return res.status(500).json({ error: "Could not fetch portal users." });
   }
 
-  const { users: authUsers, error: authError } = await listAllAuthUsers();
+  const { users: authUsers, error: authError } = await listAllAuthUsersCached();
   if (authError) {
     console.error("Admin user directory query failed:", authError);
     return res.status(500).json({ error: "Could not fetch user email addresses." });

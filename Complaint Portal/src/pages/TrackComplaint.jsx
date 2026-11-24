@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { supabase } from "../lib/supabase.js";
 
 const statusLabels = {
   pending: "Pending",
@@ -39,28 +38,29 @@ export default function TrackComplaint() {
       return;
     }
     setLoading(true);
-    const { data, error: lookupError } = await supabase.rpc(
-      "track_complaint_by_reference",
-      { p_reference_id: referenceId },
-    );
-    setLoading(false);
-    setSearched(true);
-    if (lookupError) {
-      setError(
-        lookupError.message.includes("reference_id")
-          ? "Tracking setup is incomplete. Please apply the reference_id database migration."
-          : "Unable to check this complaint right now. Please try again.",
+    try {
+      const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
+      const response = await fetch(
+        `${apiBaseUrl}/api/public/track/${encodeURIComponent(referenceId)}`,
+        { headers: { Accept: "application/json" } },
       );
-      return;
+      const payload = await response.json().catch(() => ({}));
+      setSearched(true);
+      if (!response.ok) {
+        setError(
+          response.status === 404
+            ? "No complaint was found for that ID. Check the ID and try again."
+            : payload.error || "Unable to check this complaint right now. Please try again.",
+        );
+        return;
+      }
+      setComplaint(payload.complaint);
+    } catch {
+      setSearched(true);
+      setError("Unable to reach the Complaint Portal API. Please try again later.");
+    } finally {
+      setLoading(false);
     }
-    const result = Array.isArray(data) ? data[0] : data;
-    if (!result) {
-      setError(
-        "No complaint was found for that ID. Check the ID and try again.",
-      );
-      return;
-    }
-    setComplaint(result);
   }
 
   return (
@@ -85,7 +85,7 @@ export default function TrackComplaint() {
               setComplaint(null);
               setSearched(false);
             }}
-            placeholder="e.g. CP-2026-A7K92X"
+            placeholder="e.g. CP-2026-0123456789ABCDEF0123456789ABCDEF"
             autoComplete="off"
             required
           />

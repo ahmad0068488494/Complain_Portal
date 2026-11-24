@@ -47,6 +47,7 @@ Edit `backend/.env` and replace the placeholder values:
 
 ```env
 PORT=5000
+# Comma-separated exact frontend origins; no wildcard in production.
 FRONTEND_URL=http://localhost:5173
 SUPABASE_URL=https://tnpitjbmrldctswebeeo.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=YOUR_REAL_SERVER_ONLY_SECRET_KEY
@@ -90,15 +91,17 @@ Protected routes expect `Authorization: Bearer <Supabase access token>`.
 - React uses Supabase Auth directly for sign-in/session management.
 - Student and admin complaint CRUD operations go through the Express API (`/api`), which verifies the Supabase access token before querying PostgreSQL with the server-only service key.
 - Student status refreshes continue to use Supabase Realtime; only the student's own complaint rows are subscribed to.
-- The public Reference ID tracking page continues to call the restricted `track_complaint_by_reference` RPC directly, because it supports unauthenticated tracking and returns only selected progress fields.
-- In local development, Vite proxies `/api` to `http://localhost:5000`. For separate production hosting, set `VITE_API_BASE_URL` and configure `FRONTEND_URL` on the backend to the deployed frontend origin.
+- The public Reference ID tracking page calls the Express API (`GET /api/public/track/:referenceId`); the server applies rate limiting and invokes the tracking RPC with its server-only service key.
+- In local development, Vite proxies `/api` to `http://localhost:5000`. For separate production hosting, set `VITE_API_BASE_URL` to the backend origin and configure `FRONTEND_URL` on the backend to a comma-separated allowlist of exact frontend origins.
 
 ## Complaint reference and tracking
 
 - Supabase PostgreSQL generates each complaint's `reference_id` automatically; frontend clients must never supply it for live inserts.
 - Student and admin dashboards display and search the same database-generated Reference ID.
 - Admin status updates are written to the shared `complaints` row and delivered to the student's dashboard through Supabase Realtime.
-- The public tracking page looks up a complaint by Reference ID and returns only its basic progress fields and administrator remarks.
+- The public tracking page uses the rate-limited Express endpoint to look up a Reference ID and returns only its basic progress fields and administrator remarks.
+- New Reference IDs use 32 hexadecimal characters after the year prefix. Existing IDs are preserved; the API accepts the previous 8-character format during transition.
+- The tracking RPC is executable only by the server-side `service_role`; anonymous and authenticated browser clients cannot invoke the SECURITY DEFINER function directly.
 - Existing Reference IDs are retained when the schema upgrade is applied; only missing IDs are backfilled.
 - Keep Row Level Security enabled. Admin authorization must be granted through the trusted `profiles.role` value, not a user-editable registration field.
 
@@ -109,4 +112,5 @@ The production project already has the `reference_id` column and tracking functi
 - Never commit `backend/.env`.
 - Never expose the Supabase service-role key in frontend code.
 - Keep Row Level Security enabled on user data tables.
-- For production, configure the real deployed frontend origin, input validation, rate limiting, logging, and deployment environment variables.
+- For production, configure the exact deployed frontend origin(s) in `FRONTEND_URL`, set `VITE_API_BASE_URL`, and keep all server secrets in the backend host's environment settings.
+- The built-in rate limiter uses in-memory counters for the single-instance Render deployment. Use a shared store (for example Redis) before scaling the API to multiple instances.

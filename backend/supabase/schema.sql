@@ -14,7 +14,7 @@ create table if not exists public.complaints (
   id uuid primary key default gen_random_uuid(),
   reference_id text not null default (
     'CP-' || to_char(current_timestamp, 'YYYY') || '-' ||
-    upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 8))
+    upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 32))
   ),
   user_id uuid not null references auth.users(id) on delete cascade,
   title text not null check (char_length(trim(title)) between 3 and 160),
@@ -33,13 +33,13 @@ alter table public.complaints add column if not exists reference_id text;
 update public.complaints
 set reference_id = (
   'CP-' || to_char(created_at, 'YYYY') || '-' ||
-  upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 8))
+  upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 32))
 )
 where reference_id is null or btrim(reference_id) = '';
 alter table public.complaints
   alter column reference_id set default (
     'CP-' || to_char(current_timestamp, 'YYYY') || '-' ||
-    upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 8))
+    upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 32))
   ),
   alter column reference_id set not null;
 create unique index if not exists complaints_reference_id_uidx
@@ -166,8 +166,8 @@ as $$
   limit 1;
 $$;
 
-revoke all on function public.track_complaint_by_reference(text) from public;
-grant execute on function public.track_complaint_by_reference(text) to anon, authenticated;
+revoke all on function public.track_complaint_by_reference(text) from public, anon, authenticated;
+grant execute on function public.track_complaint_by_reference(text) to service_role;
 
 -- Required for student dashboards to receive admin status changes in real time.
 do $$
