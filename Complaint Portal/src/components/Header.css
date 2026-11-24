@@ -1542,3 +1542,17 @@ nav a:hover {
     transform: none !important;
   }
 }
+
+
+/* Keep the desktop account menu connected to its trigger so pointer travel
+   into the dropdown does not fire mouseleave through a dead gap. */
+@media (min-width: 761px) {
+  .profile-dropdown {
+    top: 100% !important;
+    margin-top: 0 !important;
+    transition: opacity 180ms ease, transform 180ms ease, visibility 0s linear 180ms !important;
+  }
+  .profile-dropdown.is-visible {
+    transition: opacity 180ms ease, transform 180ms ease, visibility 0s linear 0s !important;
+  }
+}
