@@ -11,48 +11,25 @@ import StudentDashboard from "./pages/StudentDashboard.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import { supabase } from "./lib/supabase.js";
 import "./index.css";
-const views = [
-  "home",
-  "about",
-  "services",
-  "login",
-  "register",
-  "track",
-  "faqs",
-  "dashboard",
-];
+const views = ["home", "about", "services", "login", "register", "track", "faqs", "dashboard"];
 export default function App() {
-  const [view, setView] = useState(() =>
-    views.includes(location.hash.slice(1)) ? location.hash.slice(1) : "home",
-  );
+  const [view, setView] = useState(() => views.includes(location.hash.slice(1)) ? location.hash.slice(1) : "home");
   const [session, setSession] = useState(null);
   const [profile, setProfile] = useState(null);
   const [ready, setReady] = useState(false);
   useEffect(() => {
-    const hash = () =>
-      setView(
-        views.includes(location.hash.slice(1))
-          ? location.hash.slice(1)
-          : "home",
-      );
+    const hash = () => setView(views.includes(location.hash.slice(1)) ? location.hash.slice(1) : "home");
     window.addEventListener("hashchange", hash);
     return () => window.removeEventListener("hashchange", hash);
   }, []);
   useEffect(() => {
-    if (!supabase) {
-      setReady(true);
-      return;
-    }
+    if (!supabase) { setReady(true); return; }
     let alive = true;
     supabase.auth.getSession().then(async ({ data }) => {
       if (!alive) return;
       setSession(data.session);
       if (data.session?.user) {
-        const { data: p } = await supabase
-          .from("profiles")
-          .select("role,full_name")
-          .eq("id", data.session.user.id)
-          .maybeSingle();
+        const { data: p } = await supabase.from("profiles").select("role,full_name").eq("id", data.session.user.id).maybeSingle();
         if (alive) setProfile(p || null);
       }
       if (alive) setReady(true);
@@ -61,26 +38,23 @@ export default function App() {
       setSession(s);
       if (!s) setProfile(null);
     });
-    return () => {
-      alive = false;
-      sub.subscription.unsubscribe();
-    };
+    return () => { alive = false; sub.subscription.unsubscribe(); };
   }, []);
-
   useEffect(() => {
     if (!ready || !session || profile?.role !== "admin" || view === "dashboard") return;
     if (location.hash !== "#dashboard") location.hash = "dashboard";
     setView("dashboard");
   }, [ready, session, profile?.role, view]);
+  useEffect(() => {
+    if (!ready || session || view !== "track") return;
+    if (location.hash !== "#login") location.hash = "login";
+    setView("login");
+  }, [ready, session, view]);
   async function authenticated(s, p) {
     setSession(s);
     if (p) setProfile(p);
     else if (s?.user && supabase) {
-      const { data } = await supabase
-        .from("profiles")
-        .select("role,full_name")
-        .eq("id", s.user.id)
-        .maybeSingle();
+      const { data } = await supabase.from("profiles").select("role,full_name").eq("id", s.user.id).maybeSingle();
       setProfile(data || null);
     }
     location.hash = "dashboard";
@@ -94,49 +68,27 @@ export default function App() {
     setView("home");
   }
   let page;
-  if (view === "dashboard")
-    page =
-      ready && session && profile ? (
-        profile.role === "admin" ? (
-          <AdminDashboard
-            session={session}
-            profile={profile}
-            onSignOut={signOut}
-          />
-        ) : (
-          <StudentDashboard
-            session={session}
-            profile={profile}
-            onSignOut={signOut}
-            onProfileUpdated={(updates) =>
-              setProfile((current) => ({ ...current, ...updates }))
-            }
-          />
-        )
-      ) : (
-        <section className="section">
-          <h2>Sign in required</h2>
-          <p>Please log in to access your dashboard.</p>
-          <a className="btn btn-primary" href="#login">
-            Go to login
-          </a>
-        </section>
-      );
-  else
+  if (view === "dashboard") {
+    page = ready && session && profile ? (
+      profile.role === "admin"
+        ? <AdminDashboard session={session} profile={profile} onSignOut={signOut} />
+        : <StudentDashboard session={session} profile={profile} onSignOut={signOut}
+            onProfileUpdated={(updates) => setProfile((current) => ({ ...current, ...updates }))} />
+    ) : (
+      <section className="section"><h2>Sign in required</h2><p>Please log in to access your dashboard.</p><a className="btn btn-primary" href="#login">Go to login</a></section>
+    );
+  } else {
     page = {
       home: <Home />,
       about: <About />,
       services: <Services session={session} profile={profile} />,
-      track: <TrackComplaint />,
+      track: ready && session ? <TrackComplaint /> : (
+        <section className="section"><h2>Sign in required</h2><p>Please log in to track your complaints.</p><a className="btn btn-primary" href="#login">Go to login</a></section>
+      ),
       login: <AuthPage mode="login" onAuthenticated={authenticated} />,
       register: <AuthPage mode="register" onAuthenticated={authenticated} />,
       faqs: <HelpFAQs />,
     }[view] || <Home />;
-  return (
-    <div className="app-shell">
-      <Header active={view} session={session} profile={profile} onSignOut={signOut} />
-      <main>{page}</main>
-      <Footer />
-    </div>
-  );
+  }
+  return <div className="app-shell"><Header active={view} session={session} profile={profile} onSignOut={signOut} /><main>{page}</main><Footer /></div>;
 }
