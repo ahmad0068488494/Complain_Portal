@@ -1879,13 +1879,3 @@ h1, h2, h3, h4, h5, h6,
     height: 42px;
   }
 }
-
-/* Keep the admin navigation rail visually flush beneath the site header,
-   matching the student sidebar and eliminating the thin background seam. */
-.dashboard-wrap.admin-dashboard-shell {
-  background: linear-gradient(180deg, #103d6c, #08264a);
-}
-.admin-dashboard-shell > .admin-sidebar {
-  margin-top: 0;
-  border-top: 0;
-}
