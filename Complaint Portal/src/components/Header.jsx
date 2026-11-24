@@ -36,14 +36,13 @@ export default function Header({ active, session, profile, onSignOut }) {
             </button>
           </div>
           <nav id="admin-mobile-navigation" className={`admin-mobile-nav ${mobileMenuOpen ? "mobile-menu-open" : ""}`} aria-label="Admin dashboard navigation">
-            <button type="button" className="admin-mobile-dashboard" onClick={() => { closeMobileMenu(); document.getElementById("student-dashboard-content")?.scrollIntoView({ behavior: "smooth" }); }}>
-              <span>▦</span>Admin Dashboard
-            </button>
+            <button type="button" className="admin-mobile-dashboard" onClick={() => { closeMobileMenu(); document.getElementById("student-dashboard-content")?.scrollIntoView({ behavior: "smooth" }); }}><span>▦</span>Overview</button>
             <button type="button" onClick={() => { closeMobileMenu(); document.getElementById("complaint-management")?.scrollIntoView({ behavior: "smooth" }); }}><span>▤</span>Complaints</button>
             <button type="button" onClick={() => { closeMobileMenu(); document.getElementById("admin-assignment-queue")?.scrollIntoView({ behavior: "smooth" }); }}><span>⇄</span>Assignments</button>
             <button type="button" onClick={() => { closeMobileMenu(); document.getElementById("admin-analytics")?.scrollIntoView({ behavior: "smooth" }); }}><span>▥</span>Analytics</button>
             <button type="button" onClick={() => { closeMobileMenu(); document.getElementById("admin-students")?.scrollIntoView({ behavior: "smooth" }); }}><span>♙</span>Students</button>
             <button type="button" onClick={() => { closeMobileMenu(); document.getElementById("admin-profile")?.scrollIntoView({ behavior: "smooth" }); }}><span>◎</span>Profile</button>
+            <button type="button" className="admin-mobile-signout" onClick={() => { closeMobileMenu(); onSignOut?.(); }}><span>↪</span>Sign out</button>
           </nav>
         </>
       ) : (
