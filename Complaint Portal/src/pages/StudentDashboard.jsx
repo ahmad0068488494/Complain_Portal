@@ -563,7 +563,7 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
             <br />
             <small>Student services</small>
           </div>
- </aside>       </aside>
+        </aside>
       )}
       <div className="student-main-content" id="student-dashboard-content">
         <div
