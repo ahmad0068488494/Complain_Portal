@@ -99,7 +99,7 @@ export default function Header({ active, session, profile, onSignOut }) {
               aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={mobileMenuOpen} aria-controls="mobile-primary-navigation"
               onClick={() => { setMobileMenuOpen((open) => !open); setServicesOpen(false); }}>
-              <span></span><span></span><span></span>
+              <span className="menu-dot"></span><span className="menu-dot"></span><span className="menu-dot"></span>
             </button>
           </div>
         </>
