@@ -505,6 +505,9 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
         <aside className="student-sidebar">
           <div className="student-sidebar-label">MENU</div>
           <button
+            type="button"
+            title="Dashboard"
+            aria-label="Dashboard"
             className="active"
             onClick={() =>
               document
@@ -515,6 +518,9 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
             <span>▦</span>Dashboard
           </button>
           <button
+            type="button"
+            title="Raise Complaint"
+            aria-label="Raise Complaint"
             onClick={() =>
               document
                 .getElementById("raise-complaint-form")
@@ -524,6 +530,9 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
             <span>▤</span>Raise Complaint
           </button>
           <button
+            type="button"
+            title="My Complaints"
+            aria-label="My Complaints"
             onClick={() =>
               document
                 .getElementById("student-complaint-history")
@@ -533,6 +542,9 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
             <span>▧</span>My Complaints
           </button>
           <button
+            type="button"
+            title="Profile"
+            aria-label="Profile"
             onClick={() =>
               document
                 .getElementById("student-profile")
@@ -541,7 +553,7 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
           >
             <span>♙</span>Profile
           </button>
-          <button className="student-sidebar-logout" onClick={onSignOut}>
+          <button type="button" title="Logout" aria-label="Logout" className="student-sidebar-logout" onClick={onSignOut}>
             <span>↪</span>Logout
           </button>
           <div className="student-sidebar-footer">
