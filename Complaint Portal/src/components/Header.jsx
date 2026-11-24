@@ -29,12 +29,12 @@ export default function Header({ active, session, profile, onSignOut }) {
             {nav.map(([label, id]) => (
               <a key={id} className={active === id ? "active" : ""} href={"#" + id}>{label}</a>
             ))}
-            <div className={`services-nav ${servicesOpen ? "is-open" : ""}`} onMouseLeave={() => setServicesOpen(false)}>
+            <div className={`services-nav ${servicesOpen ? "is-open" : ""}`}>
               <button type="button" className={`services-toggle ${active === "services" || active === "faqs" ? "active" : ""}`}
                 aria-expanded={servicesOpen} aria-haspopup="true"
                 onClick={() => setServicesOpen((open) => !open)}
                 onKeyDown={(event) => { if (event.key === "Escape") setServicesOpen(false); }}>
-                Services <span className="services-chevron" aria-hidden="true">⌄</span>
+                Services
               </button>
               {servicesOpen && (
                 <div className="services-dropdown" role="menu">
