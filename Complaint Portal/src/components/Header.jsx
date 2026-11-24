@@ -71,7 +71,7 @@ export default function Header({ active, session, profile, onSignOut }) {
               <div className={`profile-menu ${profileMenuOpen ? "is-open" : ""}`}>
                 <button type="button" className="profile-trigger" aria-label="Open profile menu" aria-expanded={profileMenuOpen}
                   onClick={() => setProfileMenuOpen((open) => !open)}>
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5" /><path d="M5 20c.6-3.7 3.1-5.5 7-5.5s6.4 1.8 7 5.5" /></svg>
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6" fill="#fff" /><path d="M4.5 20.5c.45-4.1 3.25-6.35 7.5-6.35s7.05 2.25 7.5 6.35H4.5Z" fill="#fff" /></svg>
                 </button>
                 {profileMenuOpen && <div className="profile-dropdown" role="menu">
                   <button type="button" role="menuitem" onClick={() => { setProfileMenuOpen(false); onSignOut?.(); }}>Logout</button>
