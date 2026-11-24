@@ -29,7 +29,7 @@ export default function Home() {
           </div>
           <small>✓ One portal. Clear updates. A better campus.</small>
         </div>
-        <div className="hero-label">Campus community · Open communication</div>
+        
       </section>
       <section className="features section">
         <div className="section-title">
