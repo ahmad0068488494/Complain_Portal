@@ -368,13 +368,13 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
             <div><strong>COMPLAINT</strong><small>ADMINISTRATION</small></div>
           </div>
           <div className="admin-sidebar-label">WORKSPACE</div>
-          <button className="active" onClick={() => document.getElementById("student-dashboard-content")?.scrollIntoView({ behavior: "smooth" })}><span>▦</span>Overview</button>
-          <button onClick={() => document.getElementById("complaint-management")?.scrollIntoView({ behavior: "smooth" })}><span>▤</span>Complaints</button>
-          <button onClick={() => document.getElementById("admin-assignment-queue")?.scrollIntoView({ behavior: "smooth" })}><span>⇄</span>Assignments</button>
-          <button onClick={() => document.getElementById("admin-analytics")?.scrollIntoView({ behavior: "smooth" })}><span>▥</span>Analytics</button>
-          <button onClick={() => document.getElementById("admin-students")?.scrollIntoView({ behavior: "smooth" })}><span>♙</span>Students</button>
-          <button onClick={() => document.getElementById("admin-profile")?.scrollIntoView({ behavior: "smooth" })}><span>◎</span>Profile</button>
-          <button className="admin-sidebar-logout" onClick={onSignOut}><span>↪</span>Sign out</button>
+          <button type="button" title="Overview" aria-label="Overview" className="active" onClick={() => document.getElementById("student-dashboard-content")?.scrollIntoView({ behavior: "smooth" })}><span>▦</span>Overview</button>
+          <button type="button" title="Complaints" aria-label="Complaints" onClick={() => document.getElementById("complaint-management")?.scrollIntoView({ behavior: "smooth" })}><span>▤</span>Complaints</button>
+          <button type="button" title="Assignments" aria-label="Assignments" onClick={() => document.getElementById("admin-assignment-queue")?.scrollIntoView({ behavior: "smooth" })}><span>⇄</span>Assignments</button>
+          <button type="button" title="Analytics" aria-label="Analytics" onClick={() => document.getElementById("admin-analytics")?.scrollIntoView({ behavior: "smooth" })}><span>▥</span>Analytics</button>
+          <button type="button" title="Students" aria-label="Students" onClick={() => document.getElementById("admin-students")?.scrollIntoView({ behavior: "smooth" })}><span>♙</span>Students</button>
+          <button type="button" title="Profile" aria-label="Profile" onClick={() => document.getElementById("admin-profile")?.scrollIntoView({ behavior: "smooth" })}><span>◎</span>Profile</button>
+          <button type="button" title="Sign out" aria-label="Sign out" className="admin-sidebar-logout" onClick={onSignOut}><span>↪</span>Sign out</button>
           <div className="admin-sidebar-footer">Campus Grievance System<small>Administration workspace</small></div>
         </aside>
       )}
