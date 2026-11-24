@@ -55,7 +55,7 @@ export default function Header({ active, session, profile, onSignOut }) {
                 </div>
               )}
             </div>
-            <a className={active === "faqs" ? "active" : ""} href="#faqs" onClick={closeMobileMenu}>Help</a>
+            <a className={active === "faqs" ? "active" : ""} href="#faqs" onClick={closeMobileMenu}>Help &amp; FAQs</a>
             {session && <a className={active === "track" ? "active" : ""} href="#track" onClick={closeMobileMenu}>Track Complaint</a>}
             <div className="mobile-auth-links">
               {!session ? (
