@@ -60,6 +60,16 @@ export default function App() {
     location.hash = "dashboard";
     setView("dashboard");
   }
+  function raiseComplaint() {
+    if (session) {
+      sessionStorage.setItem("focusComplaintForm", "true");
+      location.hash = "dashboard";
+      setView("dashboard");
+      return;
+    }
+    location.hash = "login";
+    setView("login");
+  }
   async function signOut() {
     if (supabase) await supabase.auth.signOut();
     setSession(null);
@@ -79,7 +89,7 @@ export default function App() {
     );
   } else {
     page = {
-      home: <Home session={session} />,
+      home: <Home session={session} onRaiseComplaint={raiseComplaint} />,
       about: <About />,
       services: <Services session={session} profile={profile} />,
       track: ready && session ? <TrackComplaint /> : (
