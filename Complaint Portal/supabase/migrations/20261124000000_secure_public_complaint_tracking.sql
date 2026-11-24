@@ -1,5 +1,5 @@
 -- Harden public complaint tracking.
--- Existing Reference IDs remain unchanged; only future IDs use 128-bit UUID entropy.
+-- Existing Reference IDs remain unchanged; only future IDs use UUIDv4-strength randomness (122 random bits).
 alter table public.complaints
   alter column reference_id set default (
     'CP-' || to_char(current_timestamp, 'YYYY') || '-' ||
