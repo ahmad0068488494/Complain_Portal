@@ -13,70 +13,82 @@ const serviceLinks = [
   ["Help & FAQs", "faqs", "?"],
 ];
 
-export default function Header({ active, session, profile }) {
+export default function Header({ active, session, profile, onSignOut }) {
   const [servicesOpen, setServicesOpen] = useState(false);
+  const isAdmin = Boolean(session && profile?.role === "admin");
 
   return (
     <header className="site-header">
-      <a className="brand" href="#home">
+      <a className="brand" href={isAdmin ? "#dashboard" : "#home"}>
         <span className="brand-icon" aria-hidden="true">▥</span>
         Complaint Portal
       </a>
-      <nav aria-label="Main navigation">
-        {nav.slice(0, 2).map(([label, id]) => (
-          <a key={id} className={active === id ? "active" : ""} href={"#" + id}>
-            {label}
-          </a>
-        ))}
-        <div
-          className={`services-nav ${servicesOpen ? "is-open" : ""}`}
-          onMouseLeave={() => setServicesOpen(false)}
-        >
-          <button
-            type="button"
-            className={`services-toggle ${active === "services" || active === "faqs" ? "active" : ""}`}
-            aria-expanded={servicesOpen}
-            aria-haspopup="true"
-            onClick={() => setServicesOpen((open) => !open)}
-            onKeyDown={(event) => {
-              if (event.key === "Escape") setServicesOpen(false);
-            }}
-          >
-            Services <span className="services-chevron" aria-hidden="true"></span>
+
+      {isAdmin ? (
+        <div className="header-actions admin-header-actions">
+          <button className="btn btn-primary" type="button" onClick={onSignOut}>
+            Sign out
           </button>
-          {servicesOpen && (
-            <div className="services-dropdown" role="menu">
-              {serviceLinks.map(([label, id, icon]) => (
-                <a
-                  key={id}
-                  href={"#" + (label === "Raise a Complaint" ? (session ? "dashboard" : "login") : id)}
-                  role="menuitem"
-                  onClick={() => {
-                    if (label === "Raise a Complaint" && session) {
-                      sessionStorage.setItem("focusComplaintForm", "true");
-                    }
-                    setServicesOpen(false);
-                  }}
-                >
-                  <span className="services-menu-icon" aria-hidden="true">{icon}</span>
-                  <span>{label}</span>
-                </a>
-              ))}
-            </div>
-          )}
         </div>
-        <a className={active === "track" ? "active" : ""} href="#track">Track Complaint</a>
-      </nav>
-      <div className="header-actions">
-        {session && profile?.role === "student" ? (
-          <a className="btn btn-primary" href="#dashboard">My Dashboard</a>
-        ) : !session ? (
-          <>
-            <a className="btn btn-ghost" href="#login">Login</a>
-            <a className="btn btn-primary" href="#register">Register</a>
-          </>
-        ) : null}
-      </div>
+      ) : (
+        <>
+          <nav aria-label="Main navigation">
+            {nav.slice(0, 2).map(([label, id]) => (
+              <a key={id} className={active === id ? "active" : ""} href={"#" + id}>
+                {label}
+              </a>
+            ))}
+            <div
+              className={`services-nav ${servicesOpen ? "is-open" : ""}`}
+              onMouseLeave={() => setServicesOpen(false)}
+            >
+              <button
+                type="button"
+                className={`services-toggle ${active === "services" || active === "faqs" ? "active" : ""}`}
+                aria-expanded={servicesOpen}
+                aria-haspopup="true"
+                onClick={() => setServicesOpen((open) => !open)}
+                onKeyDown={(event) => {
+                  if (event.key === "Escape") setServicesOpen(false);
+                }}
+              >
+                Services <span className="services-chevron" aria-hidden="true"></span>
+              </button>
+              {servicesOpen && (
+                <div className="services-dropdown" role="menu">
+                  {serviceLinks.map(([label, id, icon]) => (
+                    <a
+                      key={id}
+                      href={"#" + (label === "Raise a Complaint" ? (session ? "dashboard" : "login") : id)}
+                      role="menuitem"
+                      onClick={() => {
+                        if (label === "Raise a Complaint" && session) {
+                          sessionStorage.setItem("focusComplaintForm", "true");
+                        }
+                        setServicesOpen(false);
+                      }}
+                    >
+                      <span className="services-menu-icon" aria-hidden="true">{icon}</span>
+                      <span>{label}</span>
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+            <a className={active === "track" ? "active" : ""} href="#track">Track Complaint</a>
+          </nav>
+          <div className="header-actions">
+            {session && profile?.role === "student" ? (
+              <a className="btn btn-primary" href="#dashboard">My Dashboard</a>
+            ) : !session ? (
+              <>
+                <a className="btn btn-ghost" href="#login">Login</a>
+                <a className="btn btn-primary" href="#register">Register</a>
+              </>
+            ) : null}
+          </div>
+        </>
+      )}
     </header>
   );
 }
