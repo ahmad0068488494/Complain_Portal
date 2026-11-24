@@ -2358,3 +2358,39 @@ h1, h2, h3, h4, h5, h6,
     color: #fff !important;
   }
 }
+
+/* Student dashboard: desktop keeps its navigation rail; phone keeps the
+   requested clean full-width dashboard without the extra menu bar. */
+@media (max-width: 760px) {
+  .student-dashboard-shell {
+    display: block !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+  .student-dashboard-shell > .student-sidebar {
+    display: none !important;
+  }
+  .student-dashboard-shell > .student-main-content {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 18px 14px 34px !important;
+    box-sizing: border-box !important;
+  }
+}
+@media (min-width: 761px) {
+  .student-dashboard-shell {
+    display: grid !important;
+    grid-template-columns: 220px minmax(0, 1fr) !important;
+  }
+  .student-dashboard-shell > .student-sidebar {
+    display: flex !important;
+  }
+  .student-dashboard-shell > .student-main-content {
+    grid-column: 2 !important;
+    min-width: 0 !important;
+  }
+}
