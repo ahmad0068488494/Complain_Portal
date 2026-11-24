@@ -553,9 +553,6 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
           >
             <span>♙</span>Profile
           </button>
-          <button type="button" title="Logout" aria-label="Logout" className="student-sidebar-logout" onClick={onSignOut}>
-            <span>↪</span>Logout
-          </button>
           <div className="student-sidebar-footer">
             Campus Grievance System
             <br />
