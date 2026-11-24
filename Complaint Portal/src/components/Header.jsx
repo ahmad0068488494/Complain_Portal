@@ -64,8 +64,11 @@ export default function Header({ active, session, profile, onSignOut }) {
                   <a className="btn btn-primary" href="#register" onClick={closeMobileMenu}>Register</a>
                 </>
               ) : (
-                <button className="btn btn-ghost mobile-logout-btn" type="button"
-                  onClick={() => { closeMobileMenu(); onSignOut?.(); }}>Logout</button>
+                <>
+                  <a className="btn btn-ghost mobile-dashboard-btn" href="#dashboard" onClick={closeMobileMenu}>Dashboard</a>
+                  <button className="btn btn-ghost mobile-logout-btn" type="button"
+                    onClick={() => { closeMobileMenu(); onSignOut?.(); }}>Logout</button>
+                </>
               )}
             </div>
           </nav>
@@ -77,6 +80,7 @@ export default function Header({ active, session, profile, onSignOut }) {
                   <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6" fill="#fff" /><path d="M4.5 20.5c.45-4.1 3.25-6.35 7.5-6.35s7.05 2.25 7.5 6.35H4.5Z" fill="#fff" /></svg>
                 </button>
                 {profileMenuOpen && <div className="profile-dropdown" role="menu">
+                  <a href="#dashboard" role="menuitem" onClick={() => setProfileMenuOpen(false)}>Dashboard</a>
                   <button type="button" role="menuitem" onClick={() => { setProfileMenuOpen(false); onSignOut?.(); }}>Logout</button>
                 </div>}
               </div>
