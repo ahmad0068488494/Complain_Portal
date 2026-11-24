@@ -63,7 +63,7 @@ export default function Home({ session, onRaiseComplaint }) {
             submitted.
           </p>
         </div>
-        <a className="btn btn-primary" href={complaintHref} onClick={openComplaint}>
+        <a className="btn btn-primary" href={complaintHref} onClick={handleRaiseComplaint}>
           Get Started →
         </a>
       </section>
