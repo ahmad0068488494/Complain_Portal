@@ -128,7 +128,7 @@ export default function App() {
     }[view] || <Home />;
   return (
     <div className="app-shell">
-      <Header active={view} session={session} />
+      <Header active={view} session={session} profile={profile} />
       <main>{page}</main>
       <Footer />
     </div>
