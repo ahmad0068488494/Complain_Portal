@@ -507,7 +507,7 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
           <div className="student-sidebar-label">MENU</div>
           <button type="button" className="student-menu-toggle" aria-expanded={studentMenuOpen}
             aria-controls="student-sidebar-links" onClick={() => setStudentMenuOpen((open) => !open)}>
-            <span className="student-menu-toggle-label">Dashboard menu</span>
+            <span className="student-menu-toggle-label">Student Menu</span>
             <span className="student-menu-chevron" aria-hidden="true">{studentMenuOpen ? "▴" : "▾"}</span>
           </button>
           <div className="student-sidebar-links" id="student-sidebar-links">
