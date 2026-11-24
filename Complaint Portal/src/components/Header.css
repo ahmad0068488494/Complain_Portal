@@ -1307,3 +1307,26 @@ nav a:hover {
     max-width: calc(100vw - 40px) !important;
   }
 }
+
+
+/* Animate the mobile hamburger into a clear close (X) icon when expanded. */
+@media (max-width: 760px) {
+  .site-header .mobile-menu-trigger {
+    position: relative !important;
+    gap: 0 !important;
+  }
+  .site-header .mobile-menu-trigger .menu-line {
+    transform-origin: center !important;
+    transition: transform 180ms ease, opacity 140ms ease !important;
+  }
+  .site-header .mobile-menu-trigger.is-open .menu-line:first-child {
+    transform: translateY(7px) rotate(45deg) !important;
+  }
+  .site-header .mobile-menu-trigger.is-open .menu-line:nth-child(2) {
+    opacity: 0 !important;
+    transform: scaleX(0) !important;
+  }
+  .site-header .mobile-menu-trigger.is-open .menu-line:last-child {
+    transform: translateY(-7px) rotate(-45deg) !important;
+  }
+}
