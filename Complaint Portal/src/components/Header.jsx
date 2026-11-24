@@ -74,15 +74,17 @@ export default function Header({ active, session, profile, onSignOut }) {
           </nav>
           <div className="header-actions">
             {session && profile?.role !== "admin" && (
-              <div className={`profile-menu ${profileMenuOpen ? "is-open" : ""}`}>
+              <div className={`profile-menu ${profileMenuOpen ? "is-open" : ""}`}
+                onMouseEnter={() => setProfileMenuOpen(true)}
+                onMouseLeave={() => setProfileMenuOpen(false)}>
                 <button type="button" className="profile-trigger" aria-label="Open profile menu" aria-expanded={profileMenuOpen}
                   onClick={() => setProfileMenuOpen((open) => !open)}>
                   <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6" fill="#fff" /><path d="M4.5 20.5c.45-4.1 3.25-6.35 7.5-6.35s7.05 2.25 7.5 6.35H4.5Z" fill="#fff" /></svg>
                 </button>
-                {profileMenuOpen && <div className="profile-dropdown" role="menu">
-                  <a href="#dashboard" role="menuitem" onClick={() => setProfileMenuOpen(false)}>Dashboard</a>
-                  <button type="button" role="menuitem" onClick={() => { setProfileMenuOpen(false); onSignOut?.(); }}>Logout</button>
-                </div>}
+                <div className={`profile-dropdown ${profileMenuOpen ? "is-visible" : ""}`} role="menu" aria-hidden={!profileMenuOpen}>
+                  <a href="#dashboard" tabIndex={profileMenuOpen ? 0 : -1} role="menuitem" onClick={() => setProfileMenuOpen(false)}>Dashboard</a>
+                  <button type="button" tabIndex={profileMenuOpen ? 0 : -1} role="menuitem" onClick={() => { setProfileMenuOpen(false); onSignOut?.(); }}>Logout</button>
+                </div>
               </div>
             )}
             {!session && (
