@@ -1508,3 +1508,37 @@ nav a:hover {
     margin: 0 !important;
   }
 }
+
+
+/* Desktop profile popover: smooth entry/exit and close on pointer leave. */
+@media (min-width: 761px) {
+  .profile-menu {
+    position: relative;
+  }
+  .profile-dropdown {
+    display: grid !important;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-7px) scale(.98);
+    transform-origin: top right;
+    transition: opacity 180ms ease, transform 180ms ease, visibility 180ms;
+    will-change: opacity, transform;
+  }
+  .profile-dropdown.is-visible {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+    transition-delay: 0s;
+  }
+  .profile-menu:not(.is-open) .profile-dropdown {
+    transition-delay: 0s, 0s, 180ms;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .profile-dropdown {
+    transition-duration: 0s !important;
+    transform: none !important;
+  }
+}
