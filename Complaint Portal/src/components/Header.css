@@ -1420,3 +1420,38 @@ nav a:hover {
     width: 34px !important; height: 34px !important; min-width: 34px !important; flex-basis: 34px !important;
   }
 }
+
+
+/* Seamless mobile menu panel: flush against the header with no hairline gap
+   or exposed corner; the dropdown covers the full header width cleanly. */
+@media (max-width: 760px) {
+  .site-header {
+    overflow: visible !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+  .site-header > nav,
+  .site-header > nav.mobile-menu-open {
+    top: calc(100% - 1px) !important;
+    right: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 10px 14px 14px !important;
+    border: 1px solid #ffffff20 !important;
+    border-top: 0 !important;
+    border-radius: 0 0 12px 12px !important;
+    background: #092d59 !important;
+    box-shadow: 0 16px 30px #041a3550 !important;
+    box-sizing: border-box !important;
+  }
+}
+@media (max-width: 380px) {
+  .site-header > nav,
+  .site-header > nav.mobile-menu-open {
+    right: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
