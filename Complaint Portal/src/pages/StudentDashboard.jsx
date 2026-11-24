@@ -502,7 +502,7 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
     <section
       className={"dashboard-wrap " + (!admin ? "student-dashboard-shell" : "")}
     >
-      {!admin && (
+      {!admin && false && (
         <aside className={`student-sidebar ${studentMenuOpen ? "student-menu-open" : ""}`}>
           <div className="student-sidebar-label">MENU</div>
           <button type="button" className="student-menu-toggle" aria-expanded={studentMenuOpen}
