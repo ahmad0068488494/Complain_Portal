@@ -118,6 +118,7 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
   const [profileError, setProfileError] = useState("");
   const [profileNotice, setProfileNotice] = useState("");
   const [remarks, setRemarks] = useState({});
+  const [studentMenuOpen, setStudentMenuOpen] = useState(false);
   const [demoMode, setDemoMode] = useState(!supabase);
 
   const load = useCallback(async () => {
@@ -502,8 +503,15 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
       className={"dashboard-wrap " + (!admin ? "student-dashboard-shell" : "")}
     >
       {!admin && (
-        <aside className="student-sidebar">
+        <aside className={`student-sidebar ${studentMenuOpen ? "student-menu-open" : ""}`}>
           <div className="student-sidebar-label">MENU</div>
+          <button type="button" className="student-menu-toggle" aria-expanded={studentMenuOpen}
+            aria-controls="student-sidebar-links" onClick={() => setStudentMenuOpen((open) => !open)}>
+            <span className="student-menu-toggle-label">Dashboard menu</span>
+            <span className="student-menu-chevron" aria-hidden="true">{studentMenuOpen ? "▴" : "▾"}</span>
+          </button>
+          <div className="student-sidebar-links" id="student-sidebar-links">
+
           <button
             type="button"
             title="Dashboard"
@@ -512,7 +520,7 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
             onClick={() =>
               document
                 .getElementById("student-dashboard-content")
-                ?.scrollIntoView({ behavior: "smooth" })
+                ?.scrollIntoView({ behavior: "smooth" }); setStudentMenuOpen(false);
             }
           >
             <span>▦</span>Dashboard
@@ -524,7 +532,7 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
             onClick={() =>
               document
                 .getElementById("raise-complaint-form")
-                ?.scrollIntoView({ behavior: "smooth" })
+                ?.scrollIntoView({ behavior: "smooth" }); setStudentMenuOpen(false);
             }
           >
             <span>▤</span>Raise Complaint
@@ -536,7 +544,7 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
             onClick={() =>
               document
                 .getElementById("student-complaint-history")
-                ?.scrollIntoView({ behavior: "smooth" })
+                ?.scrollIntoView({ behavior: "smooth" }); setStudentMenuOpen(false);
             }
           >
             <span>▧</span>My Complaints
@@ -548,17 +556,18 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
             onClick={() =>
               document
                 .getElementById("student-profile")
-                ?.scrollIntoView({ behavior: "smooth" })
+                ?.scrollIntoView({ behavior: "smooth" }); setStudentMenuOpen(false);
             }
           >
             <span>♙</span>Profile
           </button>
+          </div>
           <div className="student-sidebar-footer">
             Campus Grievance System
             <br />
             <small>Student services</small>
           </div>
-        </aside>
+ </aside>       </aside>
       )}
       <div className="student-main-content" id="student-dashboard-content">
         <div
