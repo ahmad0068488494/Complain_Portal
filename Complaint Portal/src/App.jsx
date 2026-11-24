@@ -66,6 +66,12 @@ export default function App() {
       sub.subscription.unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    if (!ready || !session || profile?.role !== "admin" || view === "dashboard") return;
+    if (location.hash !== "#dashboard") location.hash = "dashboard";
+    setView("dashboard");
+  }, [ready, session, profile?.role, view]);
   async function authenticated(s, p) {
     setSession(s);
     if (p) setProfile(p);
@@ -128,7 +134,7 @@ export default function App() {
     }[view] || <Home />;
   return (
     <div className="app-shell">
-      <Header active={view} session={session} profile={profile} />
+      <Header active={view} session={session} profile={profile} onSignOut={signOut} />
       <main>{page}</main>
       <Footer />
     </div>
