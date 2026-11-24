@@ -4,10 +4,11 @@ const features = [
   ["✓", "Fair & Transparent", "Clear updates support accountability."],
   ["♧", "A Better Campus", "Help build a safer, supportive community."],
 ];
-export default function Home({ session }) {
+export default function Home({ session, onRaiseComplaint }) {
   const complaintHref = session ? "#dashboard" : "#login";
-  const openComplaint = () => {
-    if (session) sessionStorage.setItem("focusComplaintForm", "true");
+  const handleRaiseComplaint = (event) => {
+    event.preventDefault();
+    onRaiseComplaint?.();
   };
   return (
     <>
@@ -24,7 +25,7 @@ export default function Home({ session }) {
             at your college.
           </p>
           <div className="hero-actions">
-            <a className="btn btn-primary" href={complaintHref} onClick={openComplaint}>
+            <a className="btn btn-primary" href={complaintHref} onClick={handleRaiseComplaint}>
               Raise a Complaint →
             </a>
             <a className="btn btn-ghost" href="#track">
