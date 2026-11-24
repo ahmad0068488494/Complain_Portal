@@ -453,3 +453,12 @@ nav a:hover {
     left: 0;
   }
 }
+
+
+/* The supplied profile artwork is a filled navy avatar with a white silhouette. */
+.profile-trigger svg {
+  fill: initial;
+  stroke: none;
+  width: 24px;
+  height: 24px;
+}
