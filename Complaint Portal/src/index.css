@@ -1879,3 +1879,91 @@ h1, h2, h3, h4, h5, h6,
     height: 42px;
   }
 }
+
+
+/* Student dashboard phone layout: retain the familiar labelled navigation,
+   but place it above the content so the main dashboard is not squeezed into
+   a narrow icon-only rail. Desktop keeps its full-height left sidebar. */
+@media (max-width: 760px) {
+  .student-dashboard-shell {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch;
+    width: 100%;
+    min-width: 0;
+  }
+  .student-sidebar {
+    position: static !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 7px;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 12px 14px !important;
+    border-radius: 0;
+    box-sizing: border-box;
+  }
+  .student-sidebar-label {
+    display: block !important;
+    flex: 0 0 100%;
+    margin: 0 0 3px;
+  }
+  .student-sidebar-footer {
+    display: none !important;
+  }
+  .student-sidebar > button,
+  .student-sidebar > button.student-sidebar-logout {
+    display: flex !important;
+    flex: 1 1 calc(50% - 7px) !important;
+    justify-content: flex-start !important;
+    align-items: center;
+    gap: 9px !important;
+    width: auto !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 44px !important;
+    margin: 0 !important;
+    padding: 10px 12px !important;
+    overflow: visible !important;
+    font-size: 12px !important;
+    line-height: 1.25 !important;
+    text-align: left;
+  }
+  .student-sidebar > button span {
+    display: inline-grid !important;
+    place-items: center;
+    width: 22px !important;
+    height: 22px !important;
+    flex: 0 0 22px !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+  }
+  .student-main-content {
+    width: 100% !important;
+    min-width: 0;
+    max-width: 100%;
+    padding: 18px 14px 34px !important;
+    box-sizing: border-box;
+  }
+}
+@media (max-width: 380px) {
+  .student-sidebar {
+    padding: 10px !important;
+    gap: 6px;
+  }
+  .student-sidebar > button,
+  .student-sidebar > button.student-sidebar-logout {
+    flex-basis: 100% !important;
+    min-height: 42px !important;
+  }
+  .student-main-content {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+}
