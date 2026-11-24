@@ -34,7 +34,7 @@ export default function Header({ active, session, profile, onSignOut }) {
             {nav.map(([label, id]) => (
               <a key={id} className={active === id && !(id === "about" && servicesOpen) ? "active" : ""} href={"#" + id} onClick={closeMobileMenu}>{label}</a>
             ))}
-            <div className={`services-nav ${servicesOpen ? "is-open" : ""}`}>
+            <div className={`services-nav ${servicesOpen ? "is-open" : ""}`} onMouseLeave={() => setServicesOpen(false)}>
               <button type="button" className={`services-toggle ${servicesOpen || active === "services" ? "active" : ""}`}
                 aria-expanded={servicesOpen} aria-haspopup="true"
                 onClick={() => setServicesOpen((open) => !open)}
