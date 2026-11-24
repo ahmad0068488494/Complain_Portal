@@ -65,14 +65,12 @@ export default function Header({ active, session, profile, onSignOut }) {
                 </>
               ) : (
                 <>
-                  {profile?.role === "student" && <a className="mobile-dashboard-link" href="#dashboard" onClick={closeMobileMenu}>My Dashboard</a>}
                   <button type="button" className="mobile-signout-link" onClick={() => { closeMobileMenu(); onSignOut?.(); }}>Sign out</button>
                 </>
               )}
             </div>
           </nav>
           <div className="header-actions">
-            {session && profile?.role === "student" && <a className="btn btn-primary dashboard-header-link" href="#dashboard">My Dashboard</a>}
             {!session && (
               <div className="desktop-auth-links">
                 <a className="btn btn-ghost" href="#login">Login</a>
