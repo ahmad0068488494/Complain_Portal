@@ -2122,3 +2122,37 @@ h1, h2, h3, h4, h5, h6,
     width: 100% !important;
   }
 }
+
+/* Keep the new nav wrapper transparent to the existing desktop sidebar layout. */
+@media (min-width: 761px) {
+  .student-sidebar-links { display: contents; }
+  .student-sidebar-links > button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 44px;
+    padding: 11px 12px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: #e7f0fb;
+    text-align: left;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 650;
+    cursor: pointer;
+  }
+  .student-sidebar-links > button span {
+    width: 22px;
+    font-size: 19px;
+    text-align: center;
+  }
+  .student-sidebar-links > button:hover,
+  .student-sidebar-links > button.active {
+    background: #1260ae;
+    color: white;
+    box-shadow: inset 3px 0 #e0bc65;
+  }
+  .student-menu-toggle { display: none !important; }
+}
