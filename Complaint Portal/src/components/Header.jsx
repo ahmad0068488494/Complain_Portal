@@ -63,7 +63,10 @@ export default function Header({ active, session, profile, onSignOut }) {
                   <a className="btn btn-ghost" href="#login" onClick={closeMobileMenu}>Login</a>
                   <a className="btn btn-primary" href="#register" onClick={closeMobileMenu}>Register</a>
                 </>
-              ) : null}
+              ) : (
+                <button className="btn btn-ghost mobile-logout-btn" type="button"
+                  onClick={() => { closeMobileMenu(); onSignOut?.(); }}>Logout</button>
+              )}
             </div>
           </nav>
           <div className="header-actions">
