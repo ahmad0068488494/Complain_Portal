@@ -30,6 +30,9 @@ async function getCurrentAccessToken(forceRefresh = false) {
 }
 
 async function sendRequest(path, method, body, token) {
+  if (!API_BASE_URL) {
+    throw new Error("Backend API URL is not configured. The student dashboard needs the deployed Express API URL (VITE_API_BASE_URL) in Vercel.");
+  }
   const headers = { Authorization: `Bearer ${token}` };
   if (body !== undefined) headers["Content-Type"] = "application/json";
 
