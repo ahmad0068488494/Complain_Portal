@@ -9,7 +9,6 @@ const serviceLinks = [
 
 export default function Header({ active, session, profile, onSignOut }) {
   const [servicesOpen, setServicesOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isAdmin = Boolean(session && profile?.role === "admin");
 
@@ -75,22 +74,6 @@ export default function Header({ active, session, profile, onSignOut }) {
               <div className="desktop-auth-links">
                 <a className="btn btn-ghost" href="#login">Login</a>
                 <a className="btn btn-primary" href="#register">Register</a>
-              </div>
-            )}
-            {session && (
-              <div className={`profile-menu ${profileOpen ? "is-open" : ""}`}>
-                <button className="profile-trigger desktop-profile-trigger" type="button" aria-label="Open account menu"
-                  aria-expanded={profileOpen} aria-haspopup="true"
-                  onClick={() => setProfileOpen((open) => !open)}
-                  onKeyDown={(event) => { if (event.key === "Escape") setProfileOpen(false); }}>
-                  <svg viewBox="0 0 128 128" role="img" aria-label="Profile"><circle cx="64" cy="64" r="62" fill="#062f60"/><circle cx="64" cy="43" r="22" fill="#fff"/><path d="M20 112c2-25 19-39 44-39s42 14 44 39c-12 10-27 15-44 15s-32-5-44-15Z" fill="#fff"/></svg>
-                </button>
-                {profileOpen && (
-                  <div className="profile-dropdown" role="menu">
-                    <a href="#dashboard" role="menuitem" onClick={() => setProfileOpen(false)}>My Dashboard</a>
-                    <button type="button" role="menuitem" onClick={() => { setProfileOpen(false); onSignOut?.(); }}>Sign out</button>
-                  </div>
-                )}
               </div>
             )}
             <button className={`mobile-menu-trigger ${mobileMenuOpen ? "is-open" : ""}`} type="button"
