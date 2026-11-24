@@ -25,9 +25,27 @@ export default function Header({ active, session, profile, onSignOut }) {
         <span>Complaint Portal</span>
       </a>
       {isAdmin ? (
-        <div className="header-actions admin-header-actions">
-          <button className="btn btn-primary" type="button" onClick={onSignOut}>Sign out</button>
-        </div>
+        <>
+          <div className="header-actions admin-header-actions">
+            <button className="btn btn-primary admin-desktop-signout" type="button" onClick={onSignOut}>Sign out</button>
+            <button className={`mobile-menu-trigger admin-mobile-menu-trigger ${mobileMenuOpen ? "is-open" : ""}`} type="button"
+              aria-label={mobileMenuOpen ? "Close admin menu" : "Open admin menu"} aria-expanded={mobileMenuOpen}
+              aria-controls="admin-mobile-navigation"
+              onClick={() => setMobileMenuOpen((open) => !open)}>
+              <span className="menu-line"></span><span className="menu-line"></span><span className="menu-line"></span>
+            </button>
+          </div>
+          <nav id="admin-mobile-navigation" className={`admin-mobile-nav ${mobileMenuOpen ? "mobile-menu-open" : ""}`} aria-label="Admin dashboard navigation">
+            <button type="button" className="admin-mobile-dashboard" onClick={() => { closeMobileMenu(); document.getElementById("student-dashboard-content")?.scrollIntoView({ behavior: "smooth" }); }}>
+              <span>▦</span>Admin Dashboard
+            </button>
+            <button type="button" onClick={() => { closeMobileMenu(); document.getElementById("complaint-management")?.scrollIntoView({ behavior: "smooth" }); }}><span>▤</span>Complaints</button>
+            <button type="button" onClick={() => { closeMobileMenu(); document.getElementById("admin-assignment-queue")?.scrollIntoView({ behavior: "smooth" }); }}><span>⇄</span>Assignments</button>
+            <button type="button" onClick={() => { closeMobileMenu(); document.getElementById("admin-analytics")?.scrollIntoView({ behavior: "smooth" }); }}><span>▥</span>Analytics</button>
+            <button type="button" onClick={() => { closeMobileMenu(); document.getElementById("admin-students")?.scrollIntoView({ behavior: "smooth" }); }}><span>♙</span>Students</button>
+            <button type="button" onClick={() => { closeMobileMenu(); document.getElementById("admin-profile")?.scrollIntoView({ behavior: "smooth" }); }}><span>◎</span>Profile</button>
+          </nav>
+        </>
       ) : (
         <>
           <nav id="mobile-primary-navigation" className={mobileMenuOpen ? "mobile-menu-open" : ""} aria-label="Main navigation">
