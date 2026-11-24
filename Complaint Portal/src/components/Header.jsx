@@ -13,7 +13,7 @@ const serviceLinks = [
   ["Help & FAQs", "faqs", "?"],
 ];
 
-export default function Header({ active, session }) {
+export default function Header({ active, session, profile }) {
   const [servicesOpen, setServicesOpen] = useState(false);
 
   return (
@@ -68,14 +68,14 @@ export default function Header({ active, session }) {
         <a className={active === "track" ? "active" : ""} href="#track">Track Complaint</a>
       </nav>
       <div className="header-actions">
-        {session ? (
+        {session && profile?.role === "student" ? (
           <a className="btn btn-primary" href="#dashboard">My Dashboard</a>
-        ) : (
+        ) : !session ? (
           <>
             <a className="btn btn-ghost" href="#login">Login</a>
             <a className="btn btn-primary" href="#register">Register</a>
           </>
-        )}
+        ) : null}
       </div>
     </header>
   );
