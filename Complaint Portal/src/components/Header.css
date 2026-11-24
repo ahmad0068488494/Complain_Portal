@@ -1487,3 +1487,24 @@ nav a:hover {
     background: #ffffff14 !important;
   }
 }
+
+
+/* Mobile authenticated menu: dashboard action directly above logout. */
+@media (max-width: 760px) {
+  .site-header .mobile-auth-links {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+  }
+  .site-header .mobile-auth-links .mobile-dashboard-btn,
+  .site-header .mobile-auth-links .mobile-logout-btn {
+    display: flex !important;
+    width: 100% !important;
+    min-height: 40px !important;
+    flex: 0 0 auto !important;
+    justify-content: center !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+  }
+}
