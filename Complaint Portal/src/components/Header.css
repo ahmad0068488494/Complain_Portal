@@ -1017,3 +1017,28 @@ nav a:hover {
     max-width: calc(100vw - 20px);
   }
 }
+
+
+/* Ensure the three-dot trigger reliably toggles the floating mobile menu. */
+@media (max-width: 760px) {
+  .site-header > nav:not(.mobile-menu-open) {
+    display: none !important;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .site-header > nav.mobile-menu-open {
+    display: flex !important;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  .site-header .mobile-menu-trigger {
+    position: relative;
+    z-index: 120;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .site-header .mobile-menu-trigger .menu-dot {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
