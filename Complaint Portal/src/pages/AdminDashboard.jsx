@@ -370,7 +370,6 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
           <button type="button" title="Analytics" aria-label="Analytics" onClick={() => document.getElementById("admin-analytics")?.scrollIntoView({ behavior: "smooth" })}><span>▥</span>Analytics</button>
           <button type="button" title="Students" aria-label="Students" onClick={() => document.getElementById("admin-students")?.scrollIntoView({ behavior: "smooth" })}><span>♙</span>Students</button>
           <button type="button" title="Profile" aria-label="Profile" onClick={() => document.getElementById("admin-profile")?.scrollIntoView({ behavior: "smooth" })}><span>◎</span>Profile</button>
-          <button type="button" title="Sign out" aria-label="Sign out" className="admin-sidebar-logout" onClick={onSignOut}><span>↪</span>Sign out</button>
           <div className="admin-sidebar-footer">Campus Grievance System<small>Administration workspace</small></div>
         </aside>
       )}
@@ -410,9 +409,6 @@ export default function AdminDashboard({ session, profile, onSignOut }) {
             {admin && (
               <>
                 <span className="dashboard-role">Admin access</span>
-                <button className="btn btn-outline" onClick={onSignOut}>
-                  Sign out
-                </button>
               </>
             )}
           </div>
