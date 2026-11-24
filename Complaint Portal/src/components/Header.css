@@ -1330,3 +1330,56 @@ nav a:hover {
     transform: translateY(-7px) rotate(-45deg) !important;
   }
 }
+
+
+/* Definitive mobile menu icon: evenly spaced bars, morphing into a clean X. */
+@media (max-width: 760px) {
+  .site-header .mobile-menu-trigger {
+    width: 46px !important;
+    height: 46px !important;
+    min-width: 46px !important;
+    padding: 0 !important;
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    overflow: visible !important;
+  }
+  .site-header .mobile-menu-trigger .menu-line {
+    position: absolute !important;
+    display: block !important;
+    width: 25px !important;
+    height: 3px !important;
+    min-height: 3px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 3px !important;
+    background: #fff !important;
+    opacity: 1 !important;
+    transform: translateY(0) rotate(0) !important;
+    transform-origin: center !important;
+    transition: transform 220ms ease, opacity 160ms ease !important;
+  }
+  .site-header .mobile-menu-trigger .menu-line:first-child {
+    transform: translateY(-8px) !important;
+  }
+  .site-header .mobile-menu-trigger .menu-line:nth-child(2) {
+    transform: translateY(0) !important;
+  }
+  .site-header .mobile-menu-trigger .menu-line:last-child {
+    transform: translateY(8px) !important;
+  }
+  .site-header .mobile-menu-trigger.is-open .menu-line:first-child {
+    transform: translateY(0) rotate(45deg) !important;
+  }
+  .site-header .mobile-menu-trigger.is-open .menu-line:nth-child(2) {
+    opacity: 0 !important;
+    transform: scaleX(0) !important;
+  }
+  .site-header .mobile-menu-trigger.is-open .menu-line:last-child {
+    transform: translateY(0) rotate(-45deg) !important;
+  }
+}
