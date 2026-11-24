@@ -1,5 +1,4 @@
 import { useState } from "react";
-import logo from "../assets/logo.png";
 import "./Header.css";
 
 const nav = [["Home", "home"], ["About", "about"]];
@@ -17,7 +16,7 @@ export default function Header({ active, session, profile, onSignOut }) {
   return (
     <header className="site-header">
       <a className="brand" href={isAdmin ? "#dashboard" : "#home"}>
-        <img className="brand-logo" src={logo} alt="" />
+        <span className="brand-icon" aria-hidden="true">▥</span>
         <span>Complaint Portal</span>
       </a>
       {isAdmin ? (
