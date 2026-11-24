@@ -2312,3 +2312,49 @@ h1, h2, h3, h4, h5, h6,
     margin: 0 !important;
   }
 }
+
+/* Admin dashboard phone layout: header dropdown owns navigation; remove the
+   dashboard rail and let all dashboard panels use the full mobile width. */
+@media (max-width: 760px) {
+  .dashboard-wrap.admin-dashboard-shell {
+    display: block !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+  .admin-dashboard-shell > .admin-sidebar {
+    display: none !important;
+  }
+  .admin-dashboard-shell > .admin-main-content {
+    display: block !important;
+    grid-column: auto !important;
+    grid-row: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 12px 12px 24px !important;
+    box-sizing: border-box !important;
+  }
+  .admin-main-content > *,
+  .admin-main-content .dashboard-top,
+  .admin-main-content .admin-profile-card,
+  .admin-main-content .dashboard-stats,
+  .admin-main-content .dashboard-section,
+  .admin-main-content .dashboard-section-heading {
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  .site-header .admin-mobile-nav > button.admin-mobile-signout {
+    margin-top: 6px !important;
+    border-color: #d9b85d !important;
+    background: #123d6a !important;
+    color: #fff !important;
+  }
+}
