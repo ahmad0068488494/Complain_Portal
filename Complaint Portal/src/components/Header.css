@@ -1196,3 +1196,31 @@ nav a:hover {
     box-sizing: border-box !important;
   }
 }
+
+
+/* Final icon correction: use a conventional three-line hamburger, not dots. */
+@media (max-width: 760px) {
+  .site-header .mobile-menu-trigger {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+  }
+  .site-header .mobile-menu-trigger .menu-line {
+    display: block !important;
+    width: 22px !important;
+    height: 2px !important;
+    border-radius: 2px !important;
+    background: #fff !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .site-header .mobile-menu-trigger .menu-dot {
+    display: none !important;
+  }
+  .site-header .mobile-menu-trigger.is-open .menu-line {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
