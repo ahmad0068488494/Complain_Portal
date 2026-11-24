@@ -517,11 +517,10 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
             title="Dashboard"
             aria-label="Dashboard"
             className="active"
-            onClick={() =>
-              document
-                .getElementById("student-dashboard-content")
-                ?.scrollIntoView({ behavior: "smooth" }); setStudentMenuOpen(false);
-            }
+            onClick={() => {
+              document.getElementById("student-dashboard-content")?.scrollIntoView({ behavior: "smooth" });
+              setStudentMenuOpen(false);
+            }}
           >
             <span>▦</span>Dashboard
           </button>
@@ -529,11 +528,10 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
             type="button"
             title="Raise Complaint"
             aria-label="Raise Complaint"
-            onClick={() =>
-              document
-                .getElementById("raise-complaint-form")
-                ?.scrollIntoView({ behavior: "smooth" }); setStudentMenuOpen(false);
-            }
+            onClick={() => {
+              document.getElementById("raise-complaint-form")?.scrollIntoView({ behavior: "smooth" });
+              setStudentMenuOpen(false);
+            }}
           >
             <span>▤</span>Raise Complaint
           </button>
@@ -541,11 +539,10 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
             type="button"
             title="My Complaints"
             aria-label="My Complaints"
-            onClick={() =>
-              document
-                .getElementById("student-complaint-history")
-                ?.scrollIntoView({ behavior: "smooth" }); setStudentMenuOpen(false);
-            }
+            onClick={() => {
+              document.getElementById("student-complaint-history")?.scrollIntoView({ behavior: "smooth" });
+              setStudentMenuOpen(false);
+            }}
           >
             <span>▧</span>My Complaints
           </button>
@@ -553,11 +550,10 @@ export default function StudentDashboard({ session, profile, onSignOut, onProfil
             type="button"
             title="Profile"
             aria-label="Profile"
-            onClick={() =>
-              document
-                .getElementById("student-profile")
-                ?.scrollIntoView({ behavior: "smooth" }); setStudentMenuOpen(false);
-            }
+            onClick={() => {
+              document.getElementById("student-profile")?.scrollIntoView({ behavior: "smooth" });
+              setStudentMenuOpen(false);
+            }}
           >
             <span>♙</span>Profile
           </button>
