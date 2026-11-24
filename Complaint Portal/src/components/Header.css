@@ -320,3 +320,45 @@ nav a:hover {
     font-size: 15px;
   }
 }
+
+
+/* Phone navigation: keep the brand/actions readable and make nav
+   independently scrollable without widening the document. */
+@media (max-width: 520px) {
+  .site-header {
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .brand {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .header-actions {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .header-actions .btn {
+    white-space: nowrap;
+  }
+  .site-header nav {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+  .site-header nav::-webkit-scrollbar {
+    display: none;
+  }
+  .site-header nav > a,
+  .site-header nav .services-nav {
+    flex: 0 0 auto;
+  }
+  .services-dropdown {
+    max-width: calc(100vw - 28px);
+  }
+}
